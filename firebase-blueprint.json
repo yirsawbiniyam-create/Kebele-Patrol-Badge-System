@@ -1,0 +1,56 @@
+{
+  "entities": {
+    "badges": {
+      "title": "Assosa Woreda 2 Kebele Patrol Badges",
+      "description": "Collection of Kebele Patrol badges issued by Assosa City Admin. Woreda 2 Police Office",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "badgeId": { "type": "string", "maxLength": 128 },
+        "fullNameAmharic": { "type": "string", "maxLength": 200 },
+        "fullNameEnglish": { "type": "string", "maxLength": 200 },
+        "departmentAmharic": { "type": "string", "maxLength": 200 },
+        "departmentEnglish": { "type": "string", "maxLength": 200 },
+        "rankAmharic": { "type": "string", "maxLength": 200 },
+        "rankEnglish": { "type": "string", "maxLength": 200 },
+        "phoneNumber": { "type": "string", "maxLength": 50 },
+        "headshotPhoto": { "type": "string", "maxLength": 900000 },
+        "rawHeadshotPhoto": { "type": "string", "maxLength": 900000 },
+        "ethiopiaFlag": { "type": "string", "maxLength": 900000 },
+        "regionFlag": { "type": "string", "maxLength": 900000 },
+        "commissionLogo": { "type": "string", "maxLength": 900000 },
+        "officialStamp": { "type": "string", "maxLength": 900000 },
+        "signature": { "type": "string", "maxLength": 900000 },
+        "status": { "type": "string", "enum": ["ACTIVE", "REVOKED", "EXPIRED"] },
+        "issueDate": { "type": "string", "maxLength": 32 },
+        "expiryDate": { "type": "string", "maxLength": 32 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 },
+        "notes": { "type": "string", "maxLength": 1000 }
+      },
+      "required": ["badgeId", "fullNameAmharic", "fullNameEnglish", "status"]
+    },
+    "settings": {
+      "title": "System Settings & Admin Configuration",
+      "description": "Admin credentials and customizable branding logos for Assosa Woreda 2 Police Office",
+      "type": "object",
+      "properties": {
+        "username": { "type": "string", "maxLength": 100 },
+        "password": { "type": "string", "maxLength": 200 },
+        "loginLogo": { "type": "string", "maxLength": 500000 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      }
+    }
+  },
+  "firestore": {
+    "/badges/{badgeId}": {
+      "schema": { "$ref": "#/entities/badges" },
+      "description": "Kebele Patrol member badges issued by Woreda 2 Police Office"
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/settings" },
+      "description": "Admin credentials and login branding configuration"
+    }
+  }
+}

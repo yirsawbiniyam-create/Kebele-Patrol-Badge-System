@@ -1,0 +1,82 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global safety net: default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper primitives
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    function isOptionalString(data, field, maxLen) {
+      return !(field in data) || (data[field] is string && data[field].size() <= maxLen);
+    }
+
+    function isValidBadge(data) {
+      return data.keys().hasAll(['badgeId', 'fullNameAmharic', 'fullNameEnglish', 'status']) &&
+        data.keys().hasOnly([
+          'id', 'badgeId', 'fullNameAmharic', 'fullNameEnglish',
+          'departmentAmharic', 'departmentEnglish', 'rankAmharic', 'rankEnglish',
+          'phoneNumber', 'headshotPhoto', 'rawHeadshotPhoto',
+          'ethiopiaFlag', 'regionFlag', 'commissionLogo', 'officialStamp', 'signature',
+          'status', 'issueDate', 'expiryDate', 'createdAt', 'updatedAt', 'notes'
+        ]) &&
+        data.badgeId is string && data.badgeId.size() > 0 && data.badgeId.size() <= 128 &&
+        data.fullNameAmharic is string && data.fullNameAmharic.size() > 0 && data.fullNameAmharic.size() <= 200 &&
+        data.fullNameEnglish is string && data.fullNameEnglish.size() > 0 && data.fullNameEnglish.size() <= 200 &&
+        data.status in ['ACTIVE', 'REVOKED', 'EXPIRED'] &&
+        isOptionalString(data, 'id', 128) &&
+        isOptionalString(data, 'departmentAmharic', 200) &&
+        isOptionalString(data, 'departmentEnglish', 200) &&
+        isOptionalString(data, 'rankAmharic', 200) &&
+        isOptionalString(data, 'rankEnglish', 200) &&
+        isOptionalString(data, 'phoneNumber', 50) &&
+        isOptionalString(data, 'headshotPhoto', 900000) &&
+        isOptionalString(data, 'rawHeadshotPhoto', 900000) &&
+        isOptionalString(data, 'ethiopiaFlag', 900000) &&
+        isOptionalString(data, 'regionFlag', 900000) &&
+        isOptionalString(data, 'commissionLogo', 900000) &&
+        isOptionalString(data, 'officialStamp', 900000) &&
+        isOptionalString(data, 'signature', 900000) &&
+        isOptionalString(data, 'issueDate', 32) &&
+        isOptionalString(data, 'expiryDate', 32) &&
+        isOptionalString(data, 'createdAt', 64) &&
+        isOptionalString(data, 'updatedAt', 64) &&
+        isOptionalString(data, 'notes', 1000);
+    }
+
+    function isValidSettings(data) {
+      return data.keys().hasOnly(['username', 'password', 'loginLogo', 'createdAt', 'updatedAt']) &&
+        isOptionalString(data, 'username', 100) &&
+        isOptionalString(data, 'password', 200) &&
+        isOptionalString(data, 'loginLogo', 500000) &&
+        isOptionalString(data, 'createdAt', 64) &&
+        isOptionalString(data, 'updatedAt', 64);
+    }
+
+    // Kebele Patrol Badges collection (Public QR verification & Woreda 2 Police Office management)
+    match /badges/{badgeId} {
+      allow get: if isValidId(badgeId);
+      allow list: if true;
+      allow create, update: if isValidId(badgeId) && isValidBadge(incoming());
+      allow delete: if isValidId(badgeId);
+    }
+
+    // Woreda 2 Police Office System Settings & Admin Configuration
+    match /settings/{settingId} {
+      allow get: if settingId in ['woreda2AdminAuth', 'woreda2AppConfig', 'adminAuth', 'appConfig'];
+      allow list: if false;
+      allow create, update: if settingId in ['woreda2AdminAuth', 'woreda2AppConfig', 'adminAuth', 'appConfig'] && isValidSettings(incoming());
+      allow delete: if false;
+    }
+  }
+}

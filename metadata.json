@@ -1,0 +1,6 @@
+{
+  "name": "BG POLICE BADGE SYSTEM",
+  "description": "የአሶሳ ከተማ አስ/ር ወረዳ ሁለት ፖሊስ ጽ/ቤት በስሩ ላሉት ቀበሌዎች የፓትሮል ቅኝት አባላት ባጅ መስሪያ፣ የፎቶ ማስተካከያ እና የQR ማረጋገጫ ሲስተም",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
