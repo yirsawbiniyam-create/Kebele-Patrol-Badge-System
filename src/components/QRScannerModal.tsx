@@ -57,22 +57,22 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
           <div className="w-12 h-12 bg-[#d4af37]/20 border border-[#d4af37] rounded-full flex items-center justify-center mx-auto text-[#d4af37]">
             <QrCode className="w-6 h-6" />
           </div>
-          <h3 className="text-base font-black text-[#d4af37]">
+          <h3 className="text-base font-black text-[#facc15]">
             የፖሊስ ባጅ QR ኮድ ስካነር / QR Code Scanner
           </h3>
-          <p className="text-xs text-gray-300">
+          <p className="text-xs font-bold text-sky-200">
             የባጁን የኋላ ገፅ QR ኮድ ስካን በማድረግ የፖሊስ ባጁን ትክክለኛነት ያረጋግጡ
           </p>
         </div>
 
         {/* Tab Selection */}
-        <div className="flex bg-white/10 p-1 rounded-xl text-xs font-extrabold">
+        <div className="flex bg-white/10 p-1 rounded-xl text-xs font-black">
           <button
             onClick={() => setActiveTab("CAMERA")}
             className={`flex-1 py-2 rounded-lg transition ${
               activeTab === "CAMERA"
                 ? "bg-[#d4af37] text-[#0a192f] shadow"
-                : "text-gray-300 hover:text-white"
+                : "text-sky-200 hover:text-white"
             }`}
           >
             ካሜራ (Camera)
@@ -82,7 +82,7 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
             className={`flex-1 py-2 rounded-lg transition ${
               activeTab === "GALLERY"
                 ? "bg-[#d4af37] text-[#0a192f] shadow"
-                : "text-gray-300 hover:text-white"
+                : "text-sky-200 hover:text-white"
             }`}
           >
             ፎቶ ከጋለሪ
@@ -92,7 +92,7 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
             className={`flex-1 py-2 rounded-lg transition ${
               activeTab === "SIMULATION"
                 ? "bg-[#d4af37] text-[#0a192f] shadow"
-                : "text-gray-300 hover:text-white"
+                : "text-sky-200 hover:text-white"
             }`}
           >
             ፈጣን ሙከራ
@@ -108,15 +108,15 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
               <div className="absolute top-[20%] left-[15%] right-[15%] h-0.5 bg-emerald-400 shadow-[0_0_12px_#34d399] animate-pulse" />
 
               <Camera className="w-12 h-12 text-[#d4af37] mb-2 animate-bounce" />
-              <p className="text-xs font-bold text-gray-300">
+              <p className="text-xs font-black text-sky-200">
                 የባጁን QR ኮድ በካሜራ ሌንስ ፊት ያቅርቡ...
               </p>
-              <span className="text-[10px] text-emerald-400 mt-1 font-mono">
+              <span className="text-[10px] font-black text-emerald-400 mt-1 font-mono">
                 [ CAMERA SCANNING ACTIVE ]
               </span>
             </div>
 
-            <p className="text-xs text-gray-400">
+            <p className="text-xs font-bold text-amber-300">
               ካሜራ ሳይከፈት ሲቀር ከታች የባጅ ቁጥሩን በጽሁፍ ማስገባት ይችላሉ::
             </p>
           </div>
@@ -126,7 +126,7 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
         {activeTab === "GALLERY" && (
           <div className="p-6 bg-white/5 rounded-2xl border-2 border-dashed border-gray-600 text-center space-y-3">
             <Upload className="w-10 h-10 text-[#d4af37] mx-auto" />
-            <p className="text-xs font-bold text-gray-200">
+            <p className="text-xs font-black text-sky-200">
               የባጁን የኋላ ገፅ QR ኮድ ፎቶ ከጋለሪ ይምረጡ
             </p>
             <label className="inline-block px-5 py-2.5 bg-[#d4af37] text-[#0a192f] font-black text-xs rounded-xl shadow hover:bg-[#b8860b] cursor-pointer">
@@ -139,7 +139,7 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
               />
             </label>
             {scanMessage && (
-              <p className="text-xs font-bold text-amber-300">{scanMessage}</p>
+              <p className="text-xs font-black text-amber-300">{scanMessage}</p>
             )}
           </div>
         )}
@@ -147,11 +147,11 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
         {/* Quick Simulation List View */}
         {activeTab === "SIMULATION" && (
           <div className="space-y-3 max-h-56 overflow-y-auto pr-1">
-            <p className="text-xs text-gray-300 font-semibold">
+            <p className="text-xs text-sky-300 font-black">
               ከፋየርስቶር ከተመዘገቡት ባጆች አንዱን በመምረጥ ስካኑን ይሞክሩ፡
             </p>
             {availableBadges.length === 0 ? (
-              <p className="text-xs text-rose-400 p-3 bg-rose-950/40 rounded-xl">
+              <p className="text-xs font-black text-rose-300 p-3 bg-rose-950/40 rounded-xl">
                 ምንም የተመዘገበ ባጅ የለም:: እባክዎን አስቀድመው ባጅ ይመዝግቡ::
               </p>
             ) : (
@@ -168,7 +168,7 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
                     <span className="text-xs font-black text-white font-sans block">
                       {b.fullNameAmharic}
                     </span>
-                    <span className="text-[10px] text-gray-400 font-mono">
+                    <span className="text-[10px] font-bold text-amber-300 font-mono">
                       {b.badgeId} - {b.departmentAmharic}
                     </span>
                   </div>
@@ -186,7 +186,7 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
             value={manualInput}
             onChange={(e) => setManualInput(e.target.value)}
             placeholder="ወይም የባጅ ቁጥር ያስገቡ (AW2P-1001)..."
-            className="flex-1 px-3 py-2 text-xs font-mono font-bold bg-black/50 border border-gray-600 rounded-xl text-white focus:border-[#d4af37] focus:outline-none"
+            className="flex-1 px-3 py-2 text-xs font-mono font-black bg-black/50 border border-gray-600 rounded-xl text-amber-200 focus:border-[#d4af37] focus:outline-none"
           />
           <button
             type="submit"

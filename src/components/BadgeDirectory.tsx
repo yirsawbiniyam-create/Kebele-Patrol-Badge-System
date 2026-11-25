@@ -17,6 +17,7 @@ import {
   Phone,
   Briefcase,
   Plus,
+  Download,
 } from "lucide-react";
 
 interface BadgeDirectoryProps {
@@ -62,6 +63,65 @@ export const BadgeDirectory: React.FC<BadgeDirectoryProps> = ({
   const totalCount = badges.length;
   const activeCount = badges.filter((b) => b.status === "ACTIVE").length;
   const revokedCount = badges.filter((b) => b.status === "REVOKED").length;
+
+  // Export badge directory to UTF-8 BOM CSV for Excel/offline archival
+  const handleExportCsv = () => {
+    const recordsToExport = filteredBadges.length > 0 ? filteredBadges : badges;
+    if (recordsToExport.length === 0) return;
+
+    const escapeCsvField = (value: string | undefined | null) => {
+      const str = String(value ?? "");
+      const escaped = str.replace(/"/g, '""');
+      return `"${escaped}"`;
+    };
+
+    const headers = [
+      "Badge ID",
+      "Full Name (Amharic)",
+      "Full Name (English)",
+      "Kebele / Patrol Unit (Amharic)",
+      "Kebele / Patrol Unit (English)",
+      "Patrol Role (Amharic)",
+      "Patrol Role (English)",
+      "Phone Number",
+      "Status",
+      "Issue Date",
+      "Expiry Date",
+      "Created At",
+      "Updated At",
+    ];
+
+    const rows = recordsToExport.map((b) =>
+      [
+        escapeCsvField(b.badgeId),
+        escapeCsvField(b.fullNameAmharic),
+        escapeCsvField(b.fullNameEnglish),
+        escapeCsvField(b.departmentAmharic),
+        escapeCsvField(b.departmentEnglish),
+        escapeCsvField(b.rankAmharic),
+        escapeCsvField(b.rankEnglish),
+        escapeCsvField(b.phoneNumber),
+        escapeCsvField(b.status),
+        escapeCsvField(b.issueDate),
+        escapeCsvField(b.expiryDate),
+        escapeCsvField(b.createdAt),
+        escapeCsvField(b.updatedAt || ""),
+      ].join(",")
+    );
+
+    const csvContent = "\uFEFF" + [headers.join(","), ...rows].join("\r\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    const today = new Date().toISOString().split("T")[0];
+    link.href = url;
+    link.setAttribute("download", `assosa-woreda2-patrol-badges-${today}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="space-y-6">
@@ -115,53 +175,66 @@ export const BadgeDirectory: React.FC<BadgeDirectoryProps> = ({
         </div>
       </div>
 
-      {/* Search & Filter Header Bar */}
-      <div className="bg-[#1e293b] p-4 rounded-2xl shadow-xl border border-slate-700/80 flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* Search, Export & Filter Header Bar */}
+      <div className="bg-[#1e293b] p-4 rounded-2xl shadow-xl border border-slate-700/80 flex flex-col lg:flex-row items-center justify-between gap-3">
         {/* Search Input */}
         <div className="relative flex-1 w-full">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-sky-400" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="በአባሉ ስም፣ ባጅ ቁጥር ወይም ቀበሌ ይፈልጉ..."
-            className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-900/90 text-slate-100 placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full pl-10 pr-4 py-2.5 text-xs font-bold bg-slate-900/90 text-white placeholder-slate-400 border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
 
-        {/* Status Filter Tabs */}
-        <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 bg-slate-900/80 p-1 rounded-xl border border-slate-700/80">
+        {/* Status Filter Tabs & CSV Export */}
+        <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 w-full lg:w-auto">
+          <div className="flex items-center gap-1.5 overflow-x-auto bg-slate-900/80 p-1 rounded-xl border border-slate-700/80">
+            <button
+              onClick={() => setStatusFilter("ALL")}
+              className={`px-3 py-1.5 text-xs font-black rounded-lg transition cursor-pointer ${
+                statusFilter === "ALL"
+                  ? "bg-blue-600 text-white shadow"
+                  : "text-slate-300 hover:text-white"
+              }`}
+            >
+              ሁሉም ({totalCount})
+            </button>
+            <button
+              onClick={() => setStatusFilter("ACTIVE")}
+              className={`px-3 py-1.5 text-xs font-black rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                statusFilter === "ACTIVE"
+                  ? "bg-emerald-600 text-white shadow"
+                  : "text-emerald-300 hover:text-emerald-200"
+              }`}
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              ኦፊሴላዊ ({activeCount})
+            </button>
+            <button
+              onClick={() => setStatusFilter("REVOKED")}
+              className={`px-3 py-1.5 text-xs font-black rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                statusFilter === "REVOKED"
+                  ? "bg-rose-600 text-white shadow"
+                  : "text-rose-300 hover:text-rose-200"
+              }`}
+            >
+              <ShieldAlert className="w-3.5 h-3.5" />
+              የተሰረዙ ({revokedCount})
+            </button>
+          </div>
+
           <button
-            onClick={() => setStatusFilter("ALL")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition ${
-              statusFilter === "ALL"
-                ? "bg-blue-600 text-white shadow"
-                : "text-slate-400 hover:text-slate-200"
-            }`}
+            type="button"
+            onClick={handleExportCsv}
+            disabled={badges.length === 0}
+            title="ሁሉንም የፓትሮል አባላት መረጃ በCSV ፋይል አውርድ"
+            className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs rounded-xl shadow-lg border border-emerald-400/40 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
           >
-            ሁሉም ({totalCount})
-          </button>
-          <button
-            onClick={() => setStatusFilter("ACTIVE")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition flex items-center gap-1.5 ${
-              statusFilter === "ACTIVE"
-                ? "bg-emerald-600 text-white shadow"
-                : "text-slate-400 hover:text-emerald-400"
-            }`}
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            ኦፊሴላዊ ({activeCount})
-          </button>
-          <button
-            onClick={() => setStatusFilter("REVOKED")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition flex items-center gap-1.5 ${
-              statusFilter === "REVOKED"
-                ? "bg-rose-600 text-white shadow"
-                : "text-slate-400 hover:text-rose-400"
-            }`}
-          >
-            <ShieldAlert className="w-3.5 h-3.5" />
-            የተሰረዙ ({revokedCount})
+            <Download className="w-4 h-4 text-amber-200" />
+            <span>CSV አውርድ ({filteredBadges.length})</span>
           </button>
         </div>
       </div>
@@ -221,14 +294,14 @@ export const BadgeDirectory: React.FC<BadgeDirectoryProps> = ({
                     </span>
                   </div>
 
-                  <h4 className="text-sm font-bold text-slate-100 truncate font-sans">
+                  <h4 className="text-sm font-black text-white truncate font-sans">
                     {badge.fullNameAmharic}
                   </h4>
-                  <p className="text-xs text-slate-400 truncate">
+                  <p className="text-xs font-bold text-amber-300 truncate">
                     {badge.fullNameEnglish}
                   </p>
 
-                  <div className="mt-1 flex items-center gap-1 text-[11px] font-bold text-blue-400">
+                  <div className="mt-1 flex items-center gap-1 text-[11px] font-black text-sky-400">
                     <Briefcase className="w-3 h-3" />
                     <span className="truncate">{badge.rankAmharic}</span>
                   </div>
@@ -236,22 +309,22 @@ export const BadgeDirectory: React.FC<BadgeDirectoryProps> = ({
               </div>
 
               {/* Quick Details */}
-              <div className="text-xs space-y-1.5 text-slate-300 bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+              <div className="text-xs space-y-1.5 text-slate-100 bg-slate-800/80 p-3 rounded-lg border border-slate-700">
                 <div className="flex justify-between">
-                  <span className="font-bold text-slate-400">ቀበሌ / Kebele:</span>
-                  <span className="font-bold text-slate-200 truncate max-w-[160px]">
+                  <span className="font-black text-sky-300">ቀበሌ / Kebele:</span>
+                  <span className="font-black text-amber-200 truncate max-w-[160px]">
                     {badge.departmentAmharic}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-bold text-slate-400">ስልክ / Phone:</span>
-                  <span className="font-mono font-bold text-slate-200">
+                  <span className="font-black text-sky-300">ስልክ / Phone:</span>
+                  <span className="font-mono font-black text-emerald-300">
                     {badge.phoneNumber}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-bold text-slate-400">የተሰጠበት / Issued:</span>
-                  <span className="font-mono font-semibold text-slate-300">
+                  <span className="font-black text-sky-300">የተሰጠበት / Issued:</span>
+                  <span className="font-mono font-bold text-white">
                     {badge.issueDate}
                   </span>
                 </div>

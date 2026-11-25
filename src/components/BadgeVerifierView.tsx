@@ -50,39 +50,39 @@ export const BadgeVerifierView: React.FC<BadgeVerifierViewProps> = ({
       <div className="bg-[#1e293b] p-6 rounded-2xl shadow-xl border border-slate-700 space-y-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-              <ShieldCheck className="w-6 h-6 text-blue-400" />
+            <h2 className="text-lg font-black text-white flex items-center gap-2">
+              <ShieldCheck className="w-6 h-6 text-amber-400" />
               የወረዳ 2 ፖሊስ ጽ/ቤት የፓትሮል ባጅ ማረጋገጫ / Patrol Badge Verification
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs font-bold text-sky-300 mt-1">
               የቀበሌ ፓትሮል አባሉን QR Code በካሜራ ስካን ያድርጉ ወይም የባጅ ቁጥሩን በማስገባት ትክክለኛነቱን ያረጋግጡ
             </p>
           </div>
 
           <button
             onClick={onOpenScanner}
-            className="w-full sm:w-auto px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-lg border border-blue-500 transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
+            className="w-full sm:w-auto px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl shadow-lg border border-blue-400 transition flex items-center justify-center gap-2 cursor-pointer shrink-0"
           >
-            <QrCode className="w-5 h-5" />
+            <QrCode className="w-5 h-5 text-amber-300" />
             QR Code በካሜራ ስካን አድርግ
           </button>
         </div>
 
         <form onSubmit={handleSearchSubmit} className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-sky-400" />
             <input
               type="text"
               value={inputQuery}
               onChange={(e) => setInputQuery(e.target.value)}
               placeholder="የባጅ ቁጥር ያስገቡ (ምሳሌ፡ AW2P-1001)..."
-              className="w-full pl-11 pr-4 py-3 text-sm font-mono font-bold bg-slate-800 text-slate-100 border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder:text-slate-500"
+              className="w-full pl-11 pr-4 py-3 text-sm font-mono font-black bg-slate-800 text-amber-200 border border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder:text-slate-400"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer"
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl shadow transition cursor-pointer"
           >
             {loading ? "በመፈለግ ላይ..." : "ያረጋግጡ"}
           </button>
@@ -164,91 +164,91 @@ export const BadgeVerifierView: React.FC<BadgeVerifierViewProps> = ({
                 />
               </div>
 
-              <h4 className="text-base font-bold text-slate-100 font-sans">
+              <h4 className="text-base font-black text-white font-sans">
                 {badge.fullNameAmharic}
               </h4>
-              <p className="text-xs font-semibold text-slate-400">
+              <p className="text-xs font-black text-amber-300">
                 {badge.fullNameEnglish}
               </p>
-              <span className="mt-2 px-3 py-1 bg-blue-600/20 text-blue-400 border border-blue-500/30 font-mono font-bold text-xs rounded-full">
+              <span className="mt-2 px-3 py-1 bg-blue-600/20 text-sky-300 border border-blue-400/40 font-mono font-black text-xs rounded-full">
                 {badge.badgeId}
               </span>
             </div>
 
             {/* Officer Data Sheet */}
             <div className="md:col-span-2 space-y-4 bg-slate-800 p-5 rounded-xl border border-slate-700 text-xs">
-              <h4 className="text-sm font-bold text-slate-100 pb-2 border-b border-slate-700 flex items-center gap-2">
-                <User className="w-4 h-4 text-blue-400" />
+              <h4 className="text-sm font-black text-amber-300 pb-2 border-b border-slate-700 flex items-center gap-2">
+                <User className="w-4 h-4 text-sky-400" />
                 የባለባጁ ኦፊሴላዊ መረጃዎች
               </h4>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <span className="text-slate-400 font-semibold block">
+                  <span className="text-sky-300 font-black block">
                     የሚሰራበት ቀበሌ / Kebele Unit:
                   </span>
-                  <p className="text-sm font-bold text-slate-100 font-sans">
+                  <p className="text-sm font-black text-white font-sans">
                     {badge.departmentAmharic}
                   </p>
-                  <p className="text-xs font-medium text-slate-400">
+                  <p className="text-xs font-bold text-amber-200">
                     {badge.departmentEnglish}
                   </p>
                 </div>
 
                 <div className="space-y-1">
-                  <span className="text-slate-400 font-semibold block">
+                  <span className="text-sky-300 font-black block">
                     የስራ ድርሻ / Patrol Role:
                   </span>
-                  <p className="text-sm font-bold text-blue-400 font-sans">
+                  <p className="text-sm font-black text-amber-300 font-sans">
                     {badge.rankAmharic}
                   </p>
-                  <p className="text-xs font-medium text-slate-400">
+                  <p className="text-xs font-bold text-sky-200">
                     {badge.rankEnglish}
                   </p>
                 </div>
 
                 <div className="space-y-1">
-                  <span className="text-slate-400 font-semibold block">
+                  <span className="text-sky-300 font-black block">
                     ስልክ ቁጥር / Phone Number:
                   </span>
-                  <p className="text-sm font-mono font-bold text-slate-100">
+                  <p className="text-sm font-mono font-black text-emerald-300">
                     {badge.phoneNumber}
                   </p>
                 </div>
 
                 <div className="space-y-1">
-                  <span className="text-slate-400 font-semibold block">
+                  <span className="text-sky-300 font-black block">
                     የባጁ ሁኔታ / Status:
                   </span>
-                  <span className="inline-block px-2.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold rounded-lg uppercase">
+                  <span className="inline-block px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 font-black rounded-lg uppercase">
                     {badge.status}
                   </span>
                 </div>
 
                 <div className="space-y-1">
-                  <span className="text-slate-400 font-semibold block">
+                  <span className="text-sky-300 font-black block">
                     የተሰጠበት ቀን / Issued:
                   </span>
-                  <p className="text-xs font-mono font-bold text-slate-300">
+                  <p className="text-xs font-mono font-black text-white">
                     {badge.issueDate}
                   </p>
                 </div>
 
                 <div className="space-y-1">
-                  <span className="text-slate-400 font-semibold block">
+                  <span className="text-sky-300 font-black block">
                     የሚያበቃበት ቀን / Expiry:
                   </span>
-                  <p className="text-xs font-mono font-bold text-slate-300">
+                  <p className="text-xs font-mono font-black text-amber-200">
                     {badge.expiryDate}
                   </p>
                 </div>
               </div>
 
               <div className="pt-3 border-t border-slate-700 flex items-center justify-between text-[11px]">
-                <span className="text-slate-400 font-medium">
+                <span className="text-amber-300 font-black">
                   ተቋም፡ አሶሳ ከተማ አስ/ር ወረዳ ሁለት ፖሊስ ጽ/ቤት
                 </span>
-                <span className="text-emerald-400 font-bold flex items-center gap-1">
+                <span className="text-emerald-300 font-black flex items-center gap-1">
                   <Lock className="w-3.5 h-3.5" />
                   የተጠበቀ መረጃ
                 </span>

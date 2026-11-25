@@ -137,19 +137,19 @@ export const AdminSettingsView: React.FC<AdminSettingsViewProps> = ({
         <div>
           <div className="flex items-center gap-2.5">
             <ShieldCheck className="w-6 h-6 text-amber-400" />
-            <h2 className="text-xl font-black text-slate-100 tracking-wide font-sans">
+            <h2 className="text-xl font-black text-amber-300 tracking-wide font-sans">
               የወረዳ 2 ፖሊስ ጽ/ቤት ሲስተም ማስተካከያ
             </h2>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs font-bold text-sky-300 mt-1">
             የሎጊን ገጽ ይፋዊ ሎጎ ማስተካከል እና የአድሚን መለያ (ዩሰርኔምና የይለፍ ቃል) ማስተዳደሪያ
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-medium text-slate-300 bg-slate-900/90 border border-slate-700 px-3.5 py-1.5 rounded-xl">
-          <User className="w-3.5 h-3.5 text-blue-400" />
+        <div className="flex items-center gap-2 text-xs font-black text-sky-200 bg-slate-900/90 border border-slate-700 px-3.5 py-1.5 rounded-xl">
+          <User className="w-3.5 h-3.5 text-sky-400" />
           <span>የገባው አድሚን፡</span>
-          <span className="font-mono font-bold text-amber-300">{currentUsername}</span>
+          <span className="font-mono font-black text-amber-300">{currentUsername}</span>
         </div>
       </div>
 
@@ -160,10 +160,10 @@ export const AdminSettingsView: React.FC<AdminSettingsViewProps> = ({
             <div className="pb-3 border-b border-slate-700/80 flex items-center gap-2">
               <ImageIcon className="w-5 h-5 text-amber-400" />
               <div>
-                <h3 className="text-sm font-bold text-slate-100">
+                <h3 className="text-sm font-black text-amber-300">
                   የሎጊን ገጽ ይፋዊ ሎጎ
                 </h3>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] font-bold text-sky-300">
                   በሎጊን ገጹ አናት ላይ የሚታየውን ይፋዊ የወረዳ 2 ፖሊስ ጽ/ቤት ሎጎ እዚህ ይቀይሩ
                 </p>
               </div>
@@ -182,10 +182,10 @@ export const AdminSettingsView: React.FC<AdminSettingsViewProps> = ({
               </div>
 
               <div className="text-center">
-                <span className="text-xs font-bold text-slate-200 block">
+                <span className="text-xs font-black text-white block">
                   አሶሳ ከተማ አስ/ር ወረዳ ሁለት ፖሊስ ጽ/ቤት
                 </span>
-                <span className="text-[10px] text-amber-400/90 font-medium tracking-wide uppercase">
+                <span className="text-[10px] text-amber-300 font-black tracking-wide uppercase">
                   ይፋዊ የሎጊን ገጽ ራስጌ እይታ
                 </span>
               </div>
@@ -193,8 +193,8 @@ export const AdminSettingsView: React.FC<AdminSettingsViewProps> = ({
 
             {/* Controls */}
             <div className="flex items-center gap-3">
-              <label className="flex-1 py-2.5 px-4 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-600 hover:to-indigo-600 text-white font-bold text-xs rounded-xl shadow-md border border-blue-400/30 cursor-pointer active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                <Upload className="w-4 h-4 text-blue-200" />
+              <label className="flex-1 py-2.5 px-4 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-600 hover:to-indigo-600 text-white font-black text-xs rounded-xl shadow-md border border-blue-400/30 cursor-pointer active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                <Upload className="w-4 h-4 text-amber-200" />
                 አዲስ ሎጎ ምረጥ
                 <input
                   type="file"
@@ -207,10 +207,10 @@ export const AdminSettingsView: React.FC<AdminSettingsViewProps> = ({
               <button
                 type="button"
                 onClick={handleResetDefaultLogo}
-                className="py-2.5 px-3 bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-bold rounded-xl border border-slate-700 shadow-sm active:scale-[0.98] transition flex items-center gap-1.5 cursor-pointer"
+                className="py-2.5 px-3 bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-black rounded-xl border border-slate-700 shadow-sm active:scale-[0.98] transition flex items-center gap-1.5 cursor-pointer"
                 title="ወደ ነባሪው የወረዳ 2 ፖሊስ ጽ/ቤት ሎጎ መልስ"
               >
-                <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
+                <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
                 ነባሪ
               </button>
             </div>
@@ -240,19 +240,19 @@ export const AdminSettingsView: React.FC<AdminSettingsViewProps> = ({
         <div className="bg-[#1e293b] p-6 rounded-2xl shadow-xl border border-slate-700/80 flex flex-col justify-between space-y-6">
           <form onSubmit={handleSaveCredentials} className="space-y-4">
             <div className="pb-3 border-b border-slate-700/80 flex items-center gap-2">
-              <Key className="w-5 h-5 text-blue-400" />
+              <Key className="w-5 h-5 text-sky-400" />
               <div>
-                <h3 className="text-sm font-bold text-slate-100">
+                <h3 className="text-sm font-black text-amber-300">
                   የአድሚን መለያና የይለፍ ቃል
                 </h3>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] font-bold text-sky-300">
                   ወደ ዳሽቦርዱ ለመግባት የሚያገለግለውን ዩሰርኔምና ፓስዎርድ እዚህ ይቀይሩ
                 </p>
               </div>
             </div>
 
             {credError && (
-              <div className="bg-rose-950/80 border border-rose-600/70 text-rose-200 text-xs font-bold p-3 rounded-xl flex items-center gap-2">
+              <div className="bg-rose-950/80 border border-rose-500/70 text-rose-200 text-xs font-black p-3 rounded-xl flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
                 <span>{credError}</span>
               </div>
@@ -260,11 +260,11 @@ export const AdminSettingsView: React.FC<AdminSettingsViewProps> = ({
 
             {/* Username Input */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">
+              <label className="block text-xs font-black text-sky-300 mb-1.5">
                 የአድሚን ዩሰርኔም / Username
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sky-400">
                   <User className="w-4 h-4" />
                 </div>
                 <input
@@ -275,18 +275,18 @@ export const AdminSettingsView: React.FC<AdminSettingsViewProps> = ({
                     setCredError("");
                   }}
                   required
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 text-slate-100 text-sm font-mono font-bold border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 text-white text-sm font-mono font-bold border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
             </div>
 
             {/* New Password */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">
+              <label className="block text-xs font-black text-amber-300 mb-1.5">
                 አዲስ የይለፍ ቃል / New Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-400">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
@@ -298,12 +298,12 @@ export const AdminSettingsView: React.FC<AdminSettingsViewProps> = ({
                   }}
                   required
                   placeholder="ቢያንስ 4 ፊደላት ወይም ቁጥሮች"
-                  className="w-full pl-10 pr-10 py-2.5 bg-slate-900/90 text-slate-100 text-sm font-mono border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full pl-10 pr-10 py-2.5 bg-slate-900/90 text-white text-sm font-mono font-bold border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => setShowNewPass(!showNewPass)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 cursor-pointer"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-sky-300 hover:text-amber-300 cursor-pointer"
                 >
                   {showNewPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -312,11 +312,11 @@ export const AdminSettingsView: React.FC<AdminSettingsViewProps> = ({
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">
+              <label className="block text-xs font-black text-emerald-300 mb-1.5">
                 አዲሱን የይለፍ ቃል ያረጋግጡ / Confirm Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-400">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
@@ -328,7 +328,7 @@ export const AdminSettingsView: React.FC<AdminSettingsViewProps> = ({
                   }}
                   required
                   placeholder="የይለፍ ቃሉን በድጋሚ ያስገቡ"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 text-slate-100 text-sm font-mono border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 text-white text-sm font-mono font-bold border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
             </div>
@@ -336,7 +336,7 @@ export const AdminSettingsView: React.FC<AdminSettingsViewProps> = ({
             <button
               type="submit"
               disabled={isSavingCreds}
-              className="w-full py-3.5 bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800 hover:from-blue-600 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-950/50 border border-blue-400/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-4"
+              className="w-full py-3.5 bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800 hover:from-blue-600 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-lg shadow-blue-950/50 border border-blue-400/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-4"
             >
               {isSavingCreds ? (
                 <>

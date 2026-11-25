@@ -214,11 +214,11 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Username Field */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">
+              <label className="block text-xs font-black text-sky-300 mb-1.5">
                 የአድሚን ዩሰርኔም / Username
               </label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-400 transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sky-400 group-focus-within:text-amber-400 transition-colors">
                   <User className="w-4 h-4" />
                 </div>
                 <input
@@ -232,7 +232,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({
                   placeholder="admin"
                   required
                   autoComplete="username"
-                  className="w-full pl-10 pr-4 py-3 bg-slate-950/80 text-slate-100 font-mono text-sm border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all placeholder:text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-950/80 text-white font-mono font-bold text-sm border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all placeholder:text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
                 />
               </div>
             </div>
@@ -240,12 +240,12 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({
             {/* Password Field */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-bold text-slate-300">
+                <label className="block text-xs font-black text-amber-300">
                   የይለፍ ቃል / Password
                 </label>
               </div>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-400 transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-400 group-focus-within:text-blue-400 transition-colors">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
@@ -259,14 +259,14 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
-                  className="w-full pl-10 pr-11 py-3 bg-slate-950/80 text-slate-100 font-mono text-sm border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all placeholder:text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
+                  className="w-full pl-10 pr-11 py-3 bg-slate-950/80 text-white font-mono font-bold text-sm border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all placeholder:text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
                 />
                 <button
                   type="button"
                   tabIndex={-1}
                   disabled={isLockedOut}
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 transition cursor-pointer"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-sky-300 hover:text-amber-300 transition cursor-pointer"
                   title={showPassword ? "ደብቅ" : "አሳይ"}
                 >
                   {showPassword ? (

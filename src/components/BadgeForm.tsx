@@ -252,12 +252,12 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
       <div className="bg-[#1e293b] text-slate-100 p-5 rounded-xl shadow-xl border border-slate-700 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-blue-400" />
-            <h2 className="text-xl font-bold text-slate-100 tracking-wide">
+            <ShieldCheck className="w-6 h-6 text-amber-400" />
+            <h2 className="text-xl font-black text-white tracking-wide">
               {initialData ? "የፓትሮል ባጅ መረጃ ማስተካከያ" : "አዲስ የቀበሌ ፓትሮል ባጅ መመዝገቢያ"}
             </h2>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs font-bold text-sky-300 mt-1">
             የአሶሳ ከተማ አስ/ር ወረዳ ሁለት ፖሊስ ጽ/ቤት በስሩ ላሉት ቀበሌዎች የፓትሮል ቅኝት አባላት ባጅ መመዝገቢያ
           </p>
         </div>
@@ -267,7 +267,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 transition cursor-pointer"
+              className="px-4 py-2 text-xs font-black text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 transition cursor-pointer"
             >
               ሰርዝ / Cancel
             </button>
@@ -275,7 +275,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
           <button
             type="submit"
             disabled={isSubmitting || !fullNameAmharic}
-            className="px-6 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-lg shadow-lg border border-blue-500 transition flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+            className="px-6 py-2.5 text-xs font-black text-white bg-blue-600 hover:bg-blue-500 rounded-lg shadow-lg border border-blue-400 transition flex items-center gap-2 disabled:opacity-50 cursor-pointer"
           >
             {isSubmitting ? (
               <>
@@ -284,7 +284,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
               </>
             ) : (
               <>
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-4 h-4 text-amber-300" />
                 ባጁን በፋየርስቶር መዝግብ / Save Badge
               </>
             )}
@@ -296,8 +296,8 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column: Personnel Data Inputs */}
         <div className="space-y-5 bg-[#1e293b] p-5 rounded-xl shadow-xl border border-slate-700">
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider pb-2 border-b border-slate-700 flex items-center gap-2">
-            <span className="w-2 h-4 bg-blue-500 rounded-sm"></span>
+          <h3 className="text-xs font-black text-amber-300 uppercase tracking-wider pb-2 border-b border-slate-700 flex items-center gap-2">
+            <span className="w-2 h-4 bg-amber-400 rounded-sm"></span>
             የባለባጁ ግላዊና የሙያ መረጃዎች / Personnel Information
           </h3>
 
@@ -305,10 +305,10 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
             {/* Badge ID */}
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-semibold text-slate-300">
+                <label className="block text-xs font-black text-sky-300">
                   የባጅ ቁጥር / Badge ID
                 </label>
-                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-1.5 py-0.5 rounded flex items-center gap-1">
+                <span className="text-[10px] font-black text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-1.5 py-0.5 rounded flex items-center gap-1">
                   <Hash className="w-3 h-3 text-emerald-400" />
                   አውቶማቲክ ተከታታይ
                 </span>
@@ -334,20 +334,20 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                   </button>
                 )}
               </div>
-              <p className="text-[10px] text-slate-400 mt-1">
+              <p className="text-[10px] font-bold text-amber-300/90 mt-1">
                 ሲስተሙ በቅደምተከተል የመደበው የማይደገም አውቶማቲክ የባጅ ቁጥር
               </p>
             </div>
 
             {/* Status */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-black text-sky-300 mb-1">
                 የባጁ ሁኔታ / Status
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as any)}
-                className="w-full px-3 py-2 text-sm font-bold bg-slate-800 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-3 py-2 text-sm font-black bg-slate-800 text-amber-200 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               >
                 <option value="ACTIVE">ኦፊሴላዊ/አገልግሎት ላይ (ACTIVE)</option>
                 <option value="REVOKED">የተሰረዘ (REVOKED)</option>
@@ -357,7 +357,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
             {/* Full Name Amharic */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-black text-sky-300 mb-1">
                 ሙሉ ስም (በአማርኛ) *
               </label>
               <input
@@ -366,13 +366,13 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                 onChange={(e) => setFullNameAmharic(e.target.value)}
                 placeholder="ምሳሌ፡ አቶ ዳዊት መኮንን አበበ"
                 required
-                className="w-full px-3 py-2 text-sm bg-slate-800 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-3 py-2 text-sm font-bold bg-slate-800 text-white border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder:text-slate-400"
               />
             </div>
 
             {/* Full Name English */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-black text-sky-300 mb-1">
                 Full Name (English) *
               </label>
               <input
@@ -381,13 +381,13 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                 onChange={(e) => setFullNameEnglish(e.target.value)}
                 placeholder="e.g. Dawit Mekonnen Abebe"
                 required
-                className="w-full px-3 py-2 text-sm bg-slate-800 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-3 py-2 text-sm font-bold bg-slate-800 text-amber-200 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder:text-slate-400"
               />
             </div>
 
             {/* Kebele / Patrol Unit Amharic */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-black text-sky-300 mb-1">
                 የሚሰራበት ቀበሌ / የቅኝት ክፍል (በአማርኛ)
               </label>
               <input
@@ -396,7 +396,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                 value={departmentAmharic}
                 onChange={(e) => setDepartmentAmharic(e.target.value)}
                 placeholder="ምሳሌ፡ ቀበሌ 01 ፓትሮል ቅኝት"
-                className="w-full px-3 py-2 text-sm bg-slate-800 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-3 py-2 text-sm font-bold bg-slate-800 text-white border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder:text-slate-400"
               />
               <datalist id="kebele-amharic-list">
                 <option value="ቀበሌ 01 ፓትሮል ቅኝት" />
@@ -409,7 +409,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
             {/* Kebele / Patrol Unit English */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-black text-sky-300 mb-1">
                 Assigned Kebele / Patrol Unit (English)
               </label>
               <input
@@ -418,7 +418,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                 value={departmentEnglish}
                 onChange={(e) => setDepartmentEnglish(e.target.value)}
                 placeholder="e.g. Kebele 01 Patrol Unit"
-                className="w-full px-3 py-2 text-sm bg-slate-800 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-3 py-2 text-sm font-bold bg-slate-800 text-amber-200 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder:text-slate-400"
               />
               <datalist id="kebele-english-list">
                 <option value="Kebele 01 Patrol Unit" />
@@ -431,7 +431,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
             {/* Patrol Role Amharic */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-black text-sky-300 mb-1">
                 የስራ ድርሻ / ኃላፊነት (በአማርኛ)
               </label>
               <input
@@ -440,7 +440,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                 value={rankAmharic}
                 onChange={(e) => setRankAmharic(e.target.value)}
                 placeholder="ምሳሌ፡ የቀበሌ ፓትሮል ቅኝት አባል"
-                className="w-full px-3 py-2 text-sm bg-slate-800 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-3 py-2 text-sm font-bold bg-slate-800 text-amber-300 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder:text-slate-400"
               />
               <datalist id="role-amharic-list">
                 <option value="የቀበሌ ፓትሮል ቅኝት አባል" />
@@ -452,7 +452,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
             {/* Patrol Role English */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-black text-sky-300 mb-1">
                 Patrol Role / Responsibility (English)
               </label>
               <input
@@ -461,7 +461,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                 value={rankEnglish}
                 onChange={(e) => setRankEnglish(e.target.value)}
                 placeholder="e.g. Kebele Patrol Member"
-                className="w-full px-3 py-2 text-sm bg-slate-800 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-3 py-2 text-sm font-bold bg-slate-800 text-sky-200 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder:text-slate-400"
               />
               <datalist id="role-english-list">
                 <option value="Kebele Patrol Member" />
@@ -473,7 +473,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
             {/* Phone Number */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-black text-sky-300 mb-1">
                 ስልክ ቁጥር / Phone Number
               </label>
               <input
@@ -481,39 +481,39 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 placeholder="+251 91 123 4567"
-                className="w-full px-3 py-2 text-sm font-mono bg-slate-800 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-3 py-2 text-sm font-mono font-black bg-slate-800 text-emerald-300 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder:text-slate-400"
               />
             </div>
 
             {/* Dates */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-black text-sky-300 mb-1">
                 የተሰጠበት ቀን / Issue Date
               </label>
               <input
                 type="date"
                 value={issueDate}
                 onChange={(e) => setIssueDate(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-slate-800 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-3 py-2 text-sm font-bold bg-slate-800 text-white border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-black text-sky-300 mb-1">
                 የሚያበቃበት ቀን / Expiry Date
               </label>
               <input
                 type="date"
                 value={expiryDate}
                 onChange={(e) => setExpiryDate(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-slate-800 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-3 py-2 text-sm font-bold bg-slate-800 text-white border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
           </div>
 
           {/* Official Seals, Logos & Flags Gallery Selector */}
           <div className="pt-4 border-t border-slate-700 space-y-3">
-            <h4 className="text-xs font-bold text-slate-300 flex items-center gap-1.5 uppercase">
-              <Image className="w-4 h-4 text-blue-400" />
+            <h4 className="text-xs font-black text-amber-300 flex items-center gap-1.5 uppercase">
+              <Image className="w-4 h-4 text-amber-400" />
               የባጁ ሰንደቅ ዓላማዎች፣ ሎጎ፣ ማህተምና ፊርማ ማስገቢያ (ከጋለሪ)
             </h4>
 
@@ -643,8 +643,8 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
         {/* Right Column: Headshot Photo Upload & Automatic Image Enhencer Studio */}
         <div className="space-y-5 bg-[#1e293b] p-5 rounded-xl shadow-xl border border-slate-700">
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider pb-2 border-b border-slate-700 flex items-center gap-2">
-            <Camera className="w-4 h-4 text-blue-400" />
+          <h3 className="text-xs font-black text-amber-300 uppercase tracking-wider pb-2 border-b border-slate-700 flex items-center gap-2">
+            <Camera className="w-4 h-4 text-amber-400" />
             የባለባጁ ጉርድ ፎቶ ማስገቢያና አውቶማቲክ ማስተካከያ (Photo Studio)
           </h3>
 
@@ -658,16 +658,16 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="text-center p-2 text-slate-500">
-                  <Camera className="w-8 h-8 mx-auto mb-1 text-slate-600" />
-                  <span className="text-[10px] font-bold">ፎቶ አልተመረጠም</span>
+                <div className="text-center p-2 text-slate-400">
+                  <Camera className="w-8 h-8 mx-auto mb-1 text-slate-500" />
+                  <span className="text-[10px] font-black">ፎቶ አልተመረጠም</span>
                 </div>
               )}
             </div>
 
             <div className="space-y-2 text-center sm:text-left flex-1">
-              <label className="inline-flex cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-lg text-xs shadow-md transition items-center gap-2">
-                <Upload className="w-4 h-4 text-white" />
+              <label className="inline-flex cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-black px-4 py-2 rounded-lg text-xs shadow-md transition items-center gap-2">
+                <Upload className="w-4 h-4 text-amber-200" />
                 ጉርድ ፎቶ ከጋለሪ/ካሜራ ይምረጡ
                 <input
                   type="file"
@@ -676,7 +676,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                   className="hidden"
                 />
               </label>
-              <p className="text-[11px] text-slate-400 font-medium">
+              <p className="text-[11px] text-sky-300 font-bold">
                 ፎቶውን ሲመርጡ ሲስተሙ አውቶማቲክ ባክግራውንዱን ነጭ ያደርጋል፣ ብጅታ ያስወግዳል እንዲሁም ብራይትነስ ያስተካክላል::
               </p>
             </div>
@@ -685,12 +685,12 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
           {/* Automatic Photo Enhancement Features Control Panel */}
           <div className="p-4 bg-slate-800/90 rounded-lg border border-slate-700 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5 uppercase">
-                <Sparkles className="w-4 h-4 text-blue-400 animate-pulse" />
+              <span className="text-xs font-black text-amber-300 flex items-center gap-1.5 uppercase">
+                <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
                 የሲስተሙ አውቶማቲክ ፎቶ ማስተካከያ (Auto Enhance)
               </span>
               {isProcessingPhoto && (
-                <span className="text-[10px] font-bold text-blue-400 flex items-center gap-1 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/30">
+                <span className="text-[10px] font-black text-sky-300 flex items-center gap-1 bg-blue-500/15 px-2 py-0.5 rounded-full border border-sky-400/40">
                   <RefreshCw className="w-3 h-3 animate-spin" />
                   በማስተካከል ላይ...
                 </span>
@@ -699,8 +699,8 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
             <div className="space-y-2 text-xs">
               {/* 1. Auto White Background Toggle */}
-              <label className="flex items-center justify-between p-2.5 bg-slate-900 rounded-lg border border-slate-700 cursor-pointer hover:border-slate-600">
-                <span className="font-bold text-slate-200">
+              <label className="flex items-center justify-between p-2.5 bg-slate-900 rounded-lg border border-slate-700 cursor-pointer hover:border-sky-500/50">
+                <span className="font-black text-sky-200">
                   1. ንፁህ ነጭ ባክግራውንድ ማድረግ (Auto White Background)
                 </span>
                 <input
@@ -717,8 +717,8 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
               </label>
 
               {/* 2. Glare & Reflection Reduction */}
-              <label className="flex items-center justify-between p-2.5 bg-slate-900 rounded-lg border border-slate-700 cursor-pointer hover:border-slate-600">
-                <span className="font-bold text-slate-200">
+              <label className="flex items-center justify-between p-2.5 bg-slate-900 rounded-lg border border-slate-700 cursor-pointer hover:border-sky-500/50">
+                <span className="font-black text-emerald-200">
                   2. የፎቶ ብጅታና ነጸብራቅ መቀነስ (Glare Reduction Filter)
                 </span>
                 <input
@@ -735,8 +735,8 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
               </label>
 
               {/* 3. Auto Brightness / Contrast */}
-              <label className="flex items-center justify-between p-2.5 bg-slate-900 rounded-lg border border-slate-700 cursor-pointer hover:border-slate-600">
-                <span className="font-bold text-slate-200">
+              <label className="flex items-center justify-between p-2.5 bg-slate-900 rounded-lg border border-slate-700 cursor-pointer hover:border-sky-500/50">
+                <span className="font-black text-amber-200">
                   3. አውቶማቲክ ብራይትነስና ኮንትራስት ማስተካከያ (Auto Brightness & Contrast)
                 </span>
                 <input
@@ -756,9 +756,9 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
             {/* Fine Tuning Sliders */}
             <div className="pt-2 border-t border-slate-700 grid grid-cols-2 gap-3 text-xs">
               <div>
-                <div className="flex justify-between font-bold text-slate-300 mb-1">
+                <div className="flex justify-between font-black text-sky-300 mb-1">
                   <span>ብራይትነስ / Brightness:</span>
-                  <span className="font-mono text-blue-400">{enhancementOptions.brightness}</span>
+                  <span className="font-mono font-black text-amber-300">{enhancementOptions.brightness}</span>
                 </div>
                 <input
                   type="range"
@@ -776,9 +776,9 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
               </div>
 
               <div>
-                <div className="flex justify-between font-bold text-slate-300 mb-1">
+                <div className="flex justify-between font-black text-sky-300 mb-1">
                   <span>ኮንትራስት / Contrast:</span>
-                  <span className="font-mono text-blue-400">{enhancementOptions.contrast}</span>
+                  <span className="font-mono font-black text-amber-300">{enhancementOptions.contrast}</span>
                 </div>
                 <input
                   type="range"
@@ -799,7 +799,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
             {/* Photo Position & Zoom Nudge Controls (ወደ ላይ፣ ወደ ታች፣ ወደ ግራ፣ ወደ ቀኝ እና መመላሻ) */}
             <div className="pt-3 border-t border-slate-700 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5 uppercase">
+                <span className="text-xs font-black text-amber-300 flex items-center gap-1.5 uppercase">
                   <Move className="w-4 h-4 text-amber-400" />
                   የፎቶው አቀማመጥ ማስተካከያ (Position & Zoom)
                 </span>
@@ -815,7 +815,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                       contrast: 15,
                     })
                   }
-                  className="px-2.5 py-1 text-[11px] font-bold text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 rounded-md transition flex items-center gap-1 cursor-pointer"
+                  className="px-2.5 py-1 text-[11px] font-black text-amber-300 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/50 rounded-md transition flex items-center gap-1 cursor-pointer"
                   title="ወደ ነበረበት መልስ / Reset Position"
                 >
                   <RotateCcw className="w-3 h-3" />
@@ -839,7 +839,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                     className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-md border border-slate-600 transition shadow cursor-pointer active:scale-95"
                     title="ወደ ላይ / Up"
                   >
-                    <ArrowUp className="w-4 h-4 text-blue-400" />
+                    <ArrowUp className="w-4 h-4 text-sky-400" />
                   </button>
 
                   <div className="flex items-center gap-2">
@@ -855,11 +855,11 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                       className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-md border border-slate-600 transition shadow cursor-pointer active:scale-95"
                       title="ወደ ግራ / Left"
                     >
-                      <ArrowLeft className="w-4 h-4 text-blue-400" />
+                      <ArrowLeft className="w-4 h-4 text-sky-400" />
                     </button>
 
                     {/* Offset values display */}
-                    <span className="text-[10px] font-bold text-slate-400 px-1 font-mono">
+                    <span className="text-[10px] font-black text-amber-300 px-1 font-mono">
                       {enhancementOptions.offsetX},{enhancementOptions.offsetY}
                     </span>
 
@@ -875,7 +875,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                       className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-md border border-slate-600 transition shadow cursor-pointer active:scale-95"
                       title="ወደ ቀኝ / Right"
                     >
-                      <ArrowRight className="w-4 h-4 text-blue-400" />
+                      <ArrowRight className="w-4 h-4 text-sky-400" />
                     </button>
                   </div>
 
@@ -891,7 +891,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                     className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-md border border-slate-600 transition shadow cursor-pointer active:scale-95"
                     title="ወደ ታች / Down"
                   >
-                    <ArrowDown className="w-4 h-4 text-blue-400" />
+                    <ArrowDown className="w-4 h-4 text-sky-400" />
                   </button>
                 </div>
 
@@ -899,9 +899,9 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                 <div className="flex-1 w-full space-y-2 text-xs">
                   {/* Position X */}
                   <div>
-                    <div className="flex justify-between font-bold text-slate-300 mb-0.5">
+                    <div className="flex justify-between font-black text-sky-300 mb-0.5">
                       <span>ወደ ግራ / ወደ ቀኝ (Left / Right):</span>
-                      <span className="font-mono text-blue-400">{enhancementOptions.offsetX}px</span>
+                      <span className="font-mono font-black text-amber-300">{enhancementOptions.offsetX}px</span>
                     </div>
                     <input
                       type="range"
@@ -920,9 +920,9 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
                   {/* Position Y */}
                   <div>
-                    <div className="flex justify-between font-bold text-slate-300 mb-0.5">
+                    <div className="flex justify-between font-black text-sky-300 mb-0.5">
                       <span>ወደ ላይ / ወደ ታች (Up / Down):</span>
-                      <span className="font-mono text-blue-400">{enhancementOptions.offsetY}px</span>
+                      <span className="font-mono font-black text-amber-300">{enhancementOptions.offsetY}px</span>
                     </div>
                     <input
                       type="range"
@@ -941,9 +941,9 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
                   {/* Zoom */}
                   <div>
-                    <div className="flex justify-between font-bold text-slate-300 mb-0.5">
+                    <div className="flex justify-between font-black text-emerald-300 mb-0.5">
                       <span>የፎቶ መጠን / ማጉያ (Zoom):</span>
-                      <span className="font-mono text-blue-400">{Math.round((enhancementOptions.zoom || 1) * 100)}%</span>
+                      <span className="font-mono font-black text-amber-300">{Math.round((enhancementOptions.zoom || 1) * 100)}%</span>
                     </div>
                     <input
                       type="range"
