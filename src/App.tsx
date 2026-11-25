@@ -5,9 +5,12 @@ import {
   doc,
   setDoc,
   deleteDoc,
+  getDocs,
+  query,
+  where,
 } from "firebase/firestore";
 import { db, OperationType, handleFirestoreError } from "./lib/firebase";
-import { BadgeData, AdminSettings } from "./types";
+import { BadgeData, AdminSettings, BadgeAssets } from "./types";
 import {
   DEFAULT_ETHIOPIA_FLAG,
   DEFAULT_REGION_FLAG,
@@ -110,6 +113,27 @@ export default function App() {
     return DEFAULT_COMMISSION_LOGO;
   });
 
+  const [savedBadgeAssets, setSavedBadgeAssets] = useState<BadgeAssets>(() => {
+    const fallbackAssets: BadgeAssets = {
+      ethiopiaFlag: DEFAULT_ETHIOPIA_FLAG,
+      regionFlag: DEFAULT_REGION_FLAG,
+      commissionLogo: DEFAULT_COMMISSION_LOGO,
+      officialStamp: DEFAULT_OFFICIAL_STAMP,
+      signature: DEFAULT_OFFICIAL_SIGNATURE,
+    };
+    if (typeof window !== "undefined") {
+      const cached = localStorage.getItem("assosa_w2_badge_assets");
+      if (cached) {
+        try {
+          return { ...fallbackAssets, ...JSON.parse(cached) };
+        } catch {
+          // ignore
+        }
+      }
+    }
+    return fallbackAssets;
+  });
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
       return sessionStorage.getItem("assosa_w2_admin_session") === "true";
@@ -142,11 +166,11 @@ export default function App() {
       rankEnglish: "Kebele Patrol Member",
       phoneNumber: "+251 91 123 4567",
       headshotPhoto: samplePhoto,
-      ethiopiaFlag: DEFAULT_ETHIOPIA_FLAG,
-      regionFlag: DEFAULT_REGION_FLAG,
-      commissionLogo: loginLogo || DEFAULT_COMMISSION_LOGO,
-      officialStamp: DEFAULT_OFFICIAL_STAMP,
-      signature: DEFAULT_OFFICIAL_SIGNATURE,
+      ethiopiaFlag: savedBadgeAssets.ethiopiaFlag || DEFAULT_ETHIOPIA_FLAG,
+      regionFlag: savedBadgeAssets.regionFlag || DEFAULT_REGION_FLAG,
+      commissionLogo: savedBadgeAssets.commissionLogo || loginLogo || DEFAULT_COMMISSION_LOGO,
+      officialStamp: savedBadgeAssets.officialStamp || DEFAULT_OFFICIAL_STAMP,
+      signature: savedBadgeAssets.signature || DEFAULT_OFFICIAL_SIGNATURE,
       status: "ACTIVE",
       issueDate: "2026-08-10",
       expiryDate: "2029-08-10",
@@ -155,6 +179,11 @@ export default function App() {
 
     try {
       await setDoc(sampleDocRef, sampleBadge);
+      try {
+        localStorage.setItem("assosa_w2_initial_seeded", "true");
+      } catch {
+        // ignore
+      }
     } catch (err) {
       console.warn("Firestore seed note:", err);
       setBadges((prev) => (prev.length === 0 ? [sampleBadge] : prev));
@@ -194,9 +223,16 @@ export default function App() {
         setBadges(list);
         setLoading(false);
 
-        // Seed initial sample badge if Firestore is completely empty
-        if (list.length === 0 && !snapshot.metadata.hasPendingWrites) {
+        // Seed initial sample badge ONLY on very first fresh setup (never after admin deletes badges)
+        const alreadySeeded = localStorage.getItem("assosa_w2_initial_seeded") === "true";
+        if (list.length === 0 && !snapshot.metadata.hasPendingWrites && !alreadySeeded) {
           seedSampleBadge();
+        } else if (list.length > 0 && !alreadySeeded) {
+          try {
+            localStorage.setItem("assosa_w2_initial_seeded", "true");
+          } catch {
+            // ignore
+          }
         }
       },
       (error) => {
@@ -215,9 +251,11 @@ export default function App() {
           try {
             setBadges(JSON.parse(saved));
           } catch (e) {
-            seedSampleBadge();
+            if (localStorage.getItem("assosa_w2_initial_seeded") !== "true") {
+              seedSampleBadge();
+            }
           }
-        } else {
+        } else if (localStorage.getItem("assosa_w2_initial_seeded") !== "true") {
           seedSampleBadge();
         }
       }
@@ -294,16 +332,60 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  // Save badges to local backup whenever badges change
+  // 4. Subscribe to Firestore `settings/woreda2BadgeAssets` live updates for reusable flags, logo, stamp & signature
   useEffect(() => {
-    if (badges.length > 0) {
+    const assetsDocRef = doc(db, "settings", "woreda2BadgeAssets");
+
+    const unsubscribe = onSnapshot(
+      assetsDocRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data() as Partial<BadgeAssets>;
+          setSavedBadgeAssets((prev) => {
+            const merged: BadgeAssets = {
+              ethiopiaFlag: data.ethiopiaFlag || prev.ethiopiaFlag || DEFAULT_ETHIOPIA_FLAG,
+              regionFlag: data.regionFlag || prev.regionFlag || DEFAULT_REGION_FLAG,
+              commissionLogo: data.commissionLogo || prev.commissionLogo || DEFAULT_COMMISSION_LOGO,
+              officialStamp: data.officialStamp || prev.officialStamp || DEFAULT_OFFICIAL_STAMP,
+              signature: data.signature || prev.signature || DEFAULT_OFFICIAL_SIGNATURE,
+              updatedAt: data.updatedAt,
+            };
+            try {
+              localStorage.setItem("assosa_w2_badge_assets", JSON.stringify(merged));
+            } catch {
+              // ignore
+            }
+            return merged;
+          });
+        }
+      },
+      (err) => {
+        if ((err as { code?: string })?.code === "permission-denied") {
+          try {
+            handleFirestoreError(err, OperationType.GET, "settings/woreda2BadgeAssets");
+          } catch {
+            // logged structured error context
+          }
+        }
+        console.warn("Firestore badgeAssets listener notice:", err);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  // Save badges to local backup whenever badges change (including empty array after deletions)
+  useEffect(() => {
+    if (!loading) {
       try {
         localStorage.setItem("assosa_w2_police_badges", JSON.stringify(badges));
+        localStorage.removeItem("bgr_police_badges");
+        localStorage.removeItem("bgr_police_college_badges");
       } catch (e) {
         // ignore
       }
     }
-  }, [badges]);
+  }, [badges, loading]);
 
   // Deep Linking check for QR Code URL params (e.g., ?verify=BGRPC-1001)
   useEffect(() => {
@@ -396,11 +478,65 @@ export default function App() {
     }
   };
 
+  // Save reusable badge flags, logo, stamp, and signature to Firestore
+  const handleSaveBadgeAssets = async (
+    partialAssets: Partial<BadgeAssets>,
+    silent: boolean = false
+  ): Promise<void> => {
+    const nextAssets: BadgeAssets = {
+      ethiopiaFlag: partialAssets.ethiopiaFlag ?? savedBadgeAssets.ethiopiaFlag,
+      regionFlag: partialAssets.regionFlag ?? savedBadgeAssets.regionFlag,
+      commissionLogo: partialAssets.commissionLogo ?? savedBadgeAssets.commissionLogo,
+      officialStamp: partialAssets.officialStamp ?? savedBadgeAssets.officialStamp,
+      signature: partialAssets.signature ?? savedBadgeAssets.signature,
+      updatedAt: new Date().toISOString(),
+    };
+
+    setSavedBadgeAssets(nextAssets);
+    try {
+      localStorage.setItem("assosa_w2_badge_assets", JSON.stringify(nextAssets));
+    } catch {
+      // ignore
+    }
+
+    try {
+      const assetsDocRef = doc(db, "settings", "woreda2BadgeAssets");
+      await setDoc(assetsDocRef, nextAssets, { merge: true });
+      if (!silent) {
+        showToast(
+          "ባንዲራው/ሎጎው/ፊርማው በፋየርስቶር ተመዝግቧል፤ ለቀጣይ ባጆች በራሱ ይገባል!",
+          "success"
+        );
+      }
+    } catch (err: any) {
+      if (err?.code === "permission-denied") {
+        try {
+          handleFirestoreError(err, OperationType.WRITE, "settings/woreda2BadgeAssets");
+        } catch {
+          // logged structured error context
+        }
+      }
+      console.warn("Firestore badgeAssets save notice:", err);
+    }
+  };
+
   // Save or Update Badge in Firestore with optimistic local update
   const handleSaveBadge = async (badgeData: BadgeData) => {
     setIsSubmitting(true);
     const docId = badgeData.id || badgeData.badgeId;
     const badgeToSave = { ...badgeData, id: docId };
+
+    // Keep reusable branding assets persisted in Firestore for all future badges
+    handleSaveBadgeAssets(
+      {
+        ethiopiaFlag: badgeData.ethiopiaFlag || savedBadgeAssets.ethiopiaFlag,
+        regionFlag: badgeData.regionFlag || savedBadgeAssets.regionFlag,
+        commissionLogo: badgeData.commissionLogo || savedBadgeAssets.commissionLogo,
+        officialStamp: badgeData.officialStamp || savedBadgeAssets.officialStamp,
+        signature: badgeData.signature || savedBadgeAssets.signature,
+      },
+      true
+    );
 
     setBadges((prev) => {
       const filtered = prev.filter(
@@ -442,15 +578,69 @@ export default function App() {
     }
   };
 
-  // Delete Badge from Firestore with local fallback
+  // Permanently Delete Badge from Firestore & all local caches so it stops working immediately
   const handleDeleteBadge = async (id: string) => {
+    const targetBadge = badges.find((b) => b.id === id || b.badgeId === id);
+    const targetBadgeId = targetBadge?.badgeId || id;
+
+    // Prevent re-seeding if admin deletes the last badge
+    try {
+      localStorage.setItem("assosa_w2_initial_seeded", "true");
+    } catch {
+      // ignore
+    }
+
+    // Immediately remove from local state and localStorage
+    setBadges((prev) => {
+      const updated = prev.filter(
+        (b) => b.id !== id && b.badgeId !== id && b.badgeId !== targetBadgeId
+      );
+      try {
+        localStorage.setItem("assosa_w2_police_badges", JSON.stringify(updated));
+        localStorage.removeItem("bgr_police_badges");
+        localStorage.removeItem("bgr_police_college_badges");
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+
+    // Clear active preview/verify/print/edit references to the deleted badge
+    if (verifyingBadge && (verifyingBadge.id === id || verifyingBadge.badgeId === targetBadgeId)) {
+      setVerifyingBadge(null);
+    }
+    if (printBadge && (printBadge.id === id || printBadge.badgeId === targetBadgeId)) {
+      setPrintBadge(null);
+    }
+    if (editingBadge && (editingBadge.id === id || editingBadge.badgeId === targetBadgeId)) {
+      setEditingBadge(null);
+    }
+
     try {
       await deleteDoc(doc(db, "badges", id));
-      showToast("የባጁ መረጃ ከፋየርስቶር ተሰርዟል::", "success");
+      if (targetBadgeId && targetBadgeId !== id) {
+        await deleteDoc(doc(db, "badges", targetBadgeId)).catch(() => {});
+      }
+      // Also remove any duplicate docs sharing the same badgeId
+      const dupSnap = await getDocs(
+        query(collection(db, "badges"), where("badgeId", "==", targetBadgeId))
+      );
+      await Promise.all(dupSnap.docs.map((d) => deleteDoc(doc(db, "badges", d.id))));
+
+      showToast(
+        `ባጅ (${targetBadge?.fullNameAmharic || targetBadgeId}) ከሲስተሙ ሙሉ በሙሉ ተሰርዟል፤ ከአሁን በኋላ ስካን ማድረግ አይቻልም::`,
+        "success"
+      );
     } catch (err: any) {
-      console.warn("Firestore delete fallback to local state:", err);
-      setBadges((prev) => prev.filter((b) => b.id !== id && b.badgeId !== id));
-      showToast("የባጁ መረጃ ተሰርዟል::", "success");
+      if (err?.code === "permission-denied") {
+        try {
+          handleFirestoreError(err, OperationType.DELETE, `badges/${id}`);
+        } catch {
+          // logged structured error context
+        }
+      }
+      console.warn("Firestore delete fallback notice:", err);
+      showToast("የባጁ መረጃ ከሲስተሙ ተሰርዟል::", "success");
     }
   };
 
@@ -658,6 +848,8 @@ export default function App() {
               <BadgeForm
                 initialData={editingBadge}
                 existingBadges={badges}
+                savedAssets={savedBadgeAssets}
+                onSaveBadgeAssets={(partial) => handleSaveBadgeAssets(partial, false)}
                 onSave={handleSaveBadge}
                 onCancel={() => {
                   setEditingBadge(null);

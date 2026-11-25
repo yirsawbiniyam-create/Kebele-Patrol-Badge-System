@@ -38,6 +38,11 @@
         "username": { "type": "string", "maxLength": 100 },
         "password": { "type": "string", "maxLength": 200 },
         "loginLogo": { "type": "string", "maxLength": 500000 },
+        "ethiopiaFlag": { "type": "string", "maxLength": 180000 },
+        "regionFlag": { "type": "string", "maxLength": 180000 },
+        "commissionLogo": { "type": "string", "maxLength": 180000 },
+        "officialStamp": { "type": "string", "maxLength": 180000 },
+        "signature": { "type": "string", "maxLength": 180000 },
         "createdAt": { "type": "string", "maxLength": 64 },
         "updatedAt": { "type": "string", "maxLength": 64 }
       }

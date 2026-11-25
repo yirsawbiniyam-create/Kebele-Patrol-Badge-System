@@ -59,7 +59,7 @@ export const BadgeCardBack: React.FC<BadgeCardBackProps> = ({
           <img
             src={logo}
             alt="Watermark Logo"
-            className="w-[175px] h-[175px] object-contain opacity-[0.16] filter brightness-125 contrast-125"
+            className="w-[175px] h-[175px] object-contain opacity-[0.18] filter brightness-125 contrast-125"
           />
         </div>
 
@@ -69,7 +69,7 @@ export const BadgeCardBack: React.FC<BadgeCardBackProps> = ({
             አሶሳ ከተማ አስ/ር ወረዳ 2 ፖሊስ ጽ/ቤት
           </h2>
           <div className="inline-block bg-gradient-to-r from-[#d4af37] via-[#fde047] to-[#d4af37] text-[#071326] text-[6.5px] font-black px-2 py-0.5 rounded shadow uppercase shrink-0">
-            የፓትሮል ባጅ ማረጋገጫ (PATROL VERIFICATION)
+            የፓትሮል ቅኝት ባጅ ማረጋገጫ (PATROL VERIFICATION)
           </div>
         </div>
 

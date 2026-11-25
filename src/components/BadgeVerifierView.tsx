@@ -52,10 +52,10 @@ export const BadgeVerifierView: React.FC<BadgeVerifierViewProps> = ({
           <div>
             <h2 className="text-lg font-black text-white flex items-center gap-2">
               <ShieldCheck className="w-6 h-6 text-amber-400" />
-              የወረዳ 2 ፖሊስ ጽ/ቤት የፓትሮል ባጅ ማረጋገጫ / Patrol Badge Verification
+              የወረዳ 2 ፖሊስ ጽ/ቤት የፓትሮል ቅኝት ባጅ ማረጋገጫ / Patrol Badge Verification
             </h2>
             <p className="text-xs font-bold text-sky-300 mt-1">
-              የቀበሌ ፓትሮል አባሉን QR Code በካሜራ ስካን ያድርጉ ወይም የባጅ ቁጥሩን በማስገባት ትክክለኛነቱን ያረጋግጡ
+              የቀበሌ ፓትሮል ቅኝት አባሉን QR Code በካሜራ ስካን ያድርጉ ወይም የባጅ ቁጥሩን በማስገባት ትክክለኛነቱን ያረጋግጡ
             </p>
           </div>
 
@@ -117,7 +117,7 @@ export const BadgeVerifierView: React.FC<BadgeVerifierViewProps> = ({
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-bold tracking-wide">
                   {badge.status === "ACTIVE"
-                    ? "✅ ኦፊሴላዊ የተረጋገጠ የቀበሌ ፓትሮል ባጅ / OFFICIALLY VERIFIED PATROL BADGE"
+                    ? "✅ ኦፊሴላዊ የተረጋገጠ የቀበሌ ፓትሮል ቅኝት ባጅ / OFFICIALLY VERIFIED PATROL BADGE"
                     : "⚠️ ያልተረጋገጠ ወይም የተሰረዘ ባጅ / REVOKED BADGE"}
                 </h3>
               </div>

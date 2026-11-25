@@ -55,10 +55,19 @@ service cloud.firestore {
     }
 
     function isValidSettings(data) {
-      return data.keys().hasOnly(['username', 'password', 'loginLogo', 'createdAt', 'updatedAt']) &&
+      return data.keys().hasOnly([
+          'username', 'password', 'loginLogo',
+          'ethiopiaFlag', 'regionFlag', 'commissionLogo', 'officialStamp', 'signature',
+          'createdAt', 'updatedAt'
+        ]) &&
         isOptionalString(data, 'username', 100) &&
         isOptionalString(data, 'password', 200) &&
         isOptionalString(data, 'loginLogo', 500000) &&
+        isOptionalString(data, 'ethiopiaFlag', 180000) &&
+        isOptionalString(data, 'regionFlag', 180000) &&
+        isOptionalString(data, 'commissionLogo', 180000) &&
+        isOptionalString(data, 'officialStamp', 180000) &&
+        isOptionalString(data, 'signature', 180000) &&
         isOptionalString(data, 'createdAt', 64) &&
         isOptionalString(data, 'updatedAt', 64);
     }
@@ -73,9 +82,9 @@ service cloud.firestore {
 
     // Woreda 2 Police Office System Settings & Admin Configuration
     match /settings/{settingId} {
-      allow get: if settingId in ['woreda2AdminAuth', 'woreda2AppConfig', 'adminAuth', 'appConfig'];
+      allow get: if settingId in ['woreda2AdminAuth', 'woreda2AppConfig', 'woreda2BadgeAssets', 'adminAuth', 'appConfig'];
       allow list: if false;
-      allow create, update: if settingId in ['woreda2AdminAuth', 'woreda2AppConfig', 'adminAuth', 'appConfig'] && isValidSettings(incoming());
+      allow create, update: if settingId in ['woreda2AdminAuth', 'woreda2AppConfig', 'woreda2BadgeAssets', 'adminAuth', 'appConfig'] && isValidSettings(incoming());
       allow delete: if false;
     }
   }

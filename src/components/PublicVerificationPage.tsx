@@ -1,6 +1,13 @@
 // Public Verification Page for Police Badge QR Scanning
 import React, { useState, useEffect } from "react";
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocFromServer,
+  getDocsFromServer,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { BadgeData } from "../types";
 import { BadgeCardFront } from "./BadgeCardFront";
@@ -33,32 +40,19 @@ export const PublicVerificationPage: React.FC<PublicVerificationPageProps> = ({
   const fetchBadgeData = async (idToSearch: string) => {
     const cleanId = idToSearch.trim();
     if (!cleanId) {
+      setBadge(null);
       setLoading(false);
       setNotFound(true);
-      return;
-    }
-
-    // 1. Check in live allBadges array first (case-insensitive on badgeId or doc id)
-    const match = allBadges.find(
-      (b) =>
-        b.badgeId?.toLowerCase().trim() === cleanId.toLowerCase() ||
-        b.id?.toLowerCase().trim() === cleanId.toLowerCase()
-    );
-
-    if (match) {
-      setBadge(match);
-      setNotFound(false);
-      setLoading(false);
       return;
     }
 
     setLoading(true);
     setNotFound(false);
 
-    // 2. Fetch directly from Firestore by document ID, then by badgeId query / collection lookup
+    // Always verify live against Firestore server first so deleted badges immediately stop working
     try {
       const docRef = doc(db, "badges", cleanId);
-      const docSnap = await getDoc(docRef);
+      const docSnap = await getDocFromServer(docRef);
 
       if (docSnap.exists()) {
         setBadge({ id: docSnap.id, ...(docSnap.data() as BadgeData) });
@@ -72,7 +66,7 @@ export const PublicVerificationPage: React.FC<PublicVerificationPageProps> = ({
         collection(db, "badges"),
         where("badgeId", "==", cleanId)
       );
-      const querySnap = await getDocs(badgeQuery);
+      const querySnap = await getDocsFromServer(badgeQuery);
       if (!querySnap.empty) {
         const firstDoc = querySnap.docs[0];
         setBadge({ id: firstDoc.id, ...(firstDoc.data() as BadgeData) });
@@ -81,8 +75,8 @@ export const PublicVerificationPage: React.FC<PublicVerificationPageProps> = ({
         return;
       }
 
-      // Case-insensitive fallback across registered badges in Firestore
-      const allSnap = await getDocs(collection(db, "badges"));
+      // Case-insensitive check across registered badges on Firestore server
+      const allSnap = await getDocsFromServer(collection(db, "badges"));
       let foundBadge: BadgeData | null = null;
       allSnap.forEach((d) => {
         const data = d.data() as BadgeData;
@@ -97,40 +91,29 @@ export const PublicVerificationPage: React.FC<PublicVerificationPageProps> = ({
       if (foundBadge) {
         setBadge(foundBadge);
         setNotFound(false);
+      } else {
+        // Authoritative server says badge does NOT exist (deleted or unregistered)
+        setBadge(null);
+        setNotFound(true);
+      }
+      setLoading(false);
+      return;
+    } catch (err) {
+      console.warn("Firestore server check offline fallback on public verification:", err);
+      // Offline-only fallback: check live in-memory badges or local cache
+      const liveMatch = allBadges.find(
+        (b) =>
+          b.badgeId?.toLowerCase().trim() === cleanId.toLowerCase() ||
+          b.id?.toLowerCase().trim() === cleanId.toLowerCase()
+      );
+      if (liveMatch) {
+        setBadge(liveMatch);
+        setNotFound(false);
         setLoading(false);
         return;
       }
 
-      // Fallback search locally stored badges
-      const localSaved =
-        localStorage.getItem("assosa_w2_police_badges") ||
-        localStorage.getItem("bgr_police_badges");
-      if (localSaved) {
-        try {
-          const list: BadgeData[] = JSON.parse(localSaved);
-          const localMatch = list.find(
-            (b) =>
-              b.badgeId?.toLowerCase().trim() === cleanId.toLowerCase() ||
-              b.id?.toLowerCase().trim() === cleanId.toLowerCase()
-          );
-          if (localMatch) {
-            setBadge(localMatch);
-            setNotFound(false);
-            setLoading(false);
-            return;
-          }
-        } catch {
-          // ignore
-        }
-      }
-
-      setBadge(null);
-      setNotFound(true);
-    } catch (err) {
-      console.warn("Firestore offline/fetch note on public verification:", err);
-      const localSaved =
-        localStorage.getItem("assosa_w2_police_badges") ||
-        localStorage.getItem("bgr_police_badges");
+      const localSaved = localStorage.getItem("assosa_w2_police_badges");
       if (localSaved) {
         try {
           const list: BadgeData[] = JSON.parse(localSaved);
@@ -184,7 +167,7 @@ export const PublicVerificationPage: React.FC<PublicVerificationPageProps> = ({
               <div>
                 <h1 className="text-sm sm:text-base font-black tracking-wide">
                   {badge.status === "ACTIVE"
-                    ? "✅ ትክክለኛና በሲስተሙ የተመዘገበ የፓትሮል ባጅ ነው"
+                    ? "✅ ትክክለኛና በሲስተሙ የተመዘገበ የፓትሮል ቅኝት ባጅ ነው"
                     : "⚠️ የተሰረዘ ወይም ጊዜው ያለፈበት ባጅ ነው"}
                 </h1>
                 <p className="text-xs font-bold text-amber-300 mt-0.5">
@@ -212,13 +195,13 @@ export const PublicVerificationPage: React.FC<PublicVerificationPageProps> = ({
             </div>
           </div>
         ) : (
-          <div className="bg-slate-900 p-8 sm:p-10 rounded-3xl text-center shadow-2xl border-2 border-rose-500/60 space-y-3 max-w-md w-full">
+          <div className="bg-slate-900 p-8 sm:p-10 rounded-3xl text-center shadow-2xl border-2 border-rose-500/70 space-y-3 max-w-md w-full">
             <AlertOctagon className="w-14 h-14 text-rose-400 mx-auto animate-pulse" />
             <h2 className="text-base sm:text-lg font-black text-rose-300">
-              ይህ ባጅ ({badgeId}) በሲስተሙ ውስጥ አልተመዘገበም!
+              ይህ ባጅ ({badgeId}) ከሲስተሙ ተሰርዟል ወይም አልተመዘገበም!
             </h2>
             <p className="text-xs font-bold text-amber-300">
-              ትክክለኛ የአሶሳ ወረዳ 2 ፖሊስ ጽ/ቤት ባጅ አይደለም::
+              ባጁ መስራቱን አቁሟል፤ ስካን ማድረግና መጠቀም አይቻልም::
             </p>
           </div>
         )}

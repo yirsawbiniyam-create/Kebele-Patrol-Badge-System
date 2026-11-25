@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { BadgeData, PhotoEnhancementOptions } from "../types";
-import { processHeadshotPhoto, compressPhotoForStorage } from "../utils/imageProcessing";
+import React, { useState, useEffect, useRef } from "react";
+import { BadgeData, BadgeAssets, PhotoEnhancementOptions } from "../types";
+import {
+  processHeadshotPhoto,
+  compressPhotoForStorage,
+  compressAssetForStorage,
+} from "../utils/imageProcessing";
 import {
   DEFAULT_ETHIOPIA_FLAG,
   DEFAULT_REGION_FLAG,
@@ -63,6 +67,8 @@ export function generateNextSequentialBadgeId(existingBadges: BadgeData[] = []):
 interface BadgeFormProps {
   initialData?: BadgeData | null;
   existingBadges?: BadgeData[];
+  savedAssets?: BadgeAssets;
+  onSaveBadgeAssets?: (partial: Partial<BadgeAssets>) => Promise<void>;
   onSave: (badge: BadgeData) => Promise<void>;
   onCancel?: () => void;
   isSubmitting?: boolean;
@@ -71,6 +77,8 @@ interface BadgeFormProps {
 export const BadgeForm: React.FC<BadgeFormProps> = ({
   initialData,
   existingBadges = [],
+  savedAssets,
+  onSaveBadgeAssets,
   onSave,
   onCancel,
   isSubmitting = false,
@@ -122,7 +130,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
         .split("T")[0]
   );
 
-  // Asset States
+  // Asset States (defaulting to Firestore-saved assets when creating new badges)
   const [rawHeadshotPhoto, setRawHeadshotPhoto] = useState<string>(
     initialData?.rawHeadshotPhoto || initialData?.headshotPhoto || ""
   );
@@ -130,20 +138,41 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
     initialData?.headshotPhoto || ""
   );
   const [ethiopiaFlag, setEthiopiaFlag] = useState<string>(
-    initialData?.ethiopiaFlag || DEFAULT_ETHIOPIA_FLAG
+    initialData?.ethiopiaFlag || savedAssets?.ethiopiaFlag || DEFAULT_ETHIOPIA_FLAG
   );
   const [regionFlag, setRegionFlag] = useState<string>(
-    initialData?.regionFlag || DEFAULT_REGION_FLAG
+    initialData?.regionFlag || savedAssets?.regionFlag || DEFAULT_REGION_FLAG
   );
   const [commissionLogo, setCommissionLogo] = useState<string>(
-    initialData?.commissionLogo || DEFAULT_COMMISSION_LOGO
+    initialData?.commissionLogo || savedAssets?.commissionLogo || DEFAULT_COMMISSION_LOGO
   );
   const [officialStamp, setOfficialStamp] = useState<string>(
-    initialData?.officialStamp || DEFAULT_OFFICIAL_STAMP
+    initialData?.officialStamp || savedAssets?.officialStamp || DEFAULT_OFFICIAL_STAMP
   );
   const [signature, setSignature] = useState<string>(
-    initialData?.signature || DEFAULT_OFFICIAL_SIGNATURE
+    initialData?.signature || savedAssets?.signature || DEFAULT_OFFICIAL_SIGNATURE
   );
+  const dirtyAssetsRef = useRef<Record<string, boolean>>({});
+
+  // Sync saved Firestore assets into new badge form when loaded
+  useEffect(() => {
+    if (initialData || !savedAssets) return;
+    if (!dirtyAssetsRef.current.ethiopiaFlag && savedAssets.ethiopiaFlag) {
+      setEthiopiaFlag(savedAssets.ethiopiaFlag);
+    }
+    if (!dirtyAssetsRef.current.regionFlag && savedAssets.regionFlag) {
+      setRegionFlag(savedAssets.regionFlag);
+    }
+    if (!dirtyAssetsRef.current.commissionLogo && savedAssets.commissionLogo) {
+      setCommissionLogo(savedAssets.commissionLogo);
+    }
+    if (!dirtyAssetsRef.current.officialStamp && savedAssets.officialStamp) {
+      setOfficialStamp(savedAssets.officialStamp);
+    }
+    if (!dirtyAssetsRef.current.signature && savedAssets.signature) {
+      setSignature(savedAssets.signature);
+    }
+  }, [initialData, savedAssets]);
 
   // Auto Image Enhancement Options State
   const [enhancementOptions, setEnhancementOptions] =
@@ -190,22 +219,30 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
     };
   }, [rawHeadshotPhoto, enhancementOptions]);
 
-  // Handle image upload from gallery for any image slot
+  // Handle image upload from gallery for headshot or reusable Firestore-saved branding assets
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
     setter: (val: string) => void,
-    isHeadshot: boolean = false
+    isHeadshot: boolean = false,
+    assetKey?: keyof Omit<BadgeAssets, "updatedAt">
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const dataUrl = event.target?.result as string;
       if (isHeadshot) {
         setRawHeadshotPhoto(dataUrl);
       } else {
-        setter(dataUrl);
+        const compressed = await compressAssetForStorage(dataUrl, 360, 360, 160000);
+        setter(compressed);
+        if (assetKey) {
+          dirtyAssetsRef.current[assetKey] = true;
+          if (onSaveBadgeAssets) {
+            await onSaveBadgeAssets({ [assetKey]: compressed });
+          }
+        }
       }
     };
     reader.readAsDataURL(file);
@@ -254,7 +291,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-6 h-6 text-amber-400" />
             <h2 className="text-xl font-black text-white tracking-wide">
-              {initialData ? "የፓትሮል ባጅ መረጃ ማስተካከያ" : "አዲስ የቀበሌ ፓትሮል ባጅ መመዝገቢያ"}
+              {initialData ? "የፓትሮል ቅኝት ባጅ መረጃ ማስተካከያ" : "አዲስ የቀበሌ ፓትሮል ቅኝት ባጅ መመዝገቢያ"}
             </h2>
           </div>
           <p className="text-xs font-bold text-sky-300 mt-1">
@@ -445,8 +482,8 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
               <datalist id="role-amharic-list">
                 <option value="የቀበሌ ፓትሮል ቅኝት አባል" />
                 <option value="የፓትሮል ቅኝት ቡድን መሪ" />
-                <option value="የቀበሌ ሰላምና ጸጥታ ፓትሮል" />
-                <option value="የወረዳ 2 ፓትሮል አስተባባሪ" />
+                <option value="የቀበሌ ሰላምና ጸጥታ ፓትሮል ቅኝት" />
+                <option value="የወረዳ 2 ፓትሮል ቅኝት አስተባባሪ" />
               </datalist>
             </div>
 
@@ -512,15 +549,23 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
           {/* Official Seals, Logos & Flags Gallery Selector */}
           <div className="pt-4 border-t border-slate-700 space-y-3">
-            <h4 className="text-xs font-black text-amber-300 flex items-center gap-1.5 uppercase">
-              <Image className="w-4 h-4 text-amber-400" />
-              የባጁ ሰንደቅ ዓላማዎች፣ ሎጎ፣ ማህተምና ፊርማ ማስገቢያ (ከጋለሪ)
-            </h4>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <h4 className="text-xs font-black text-amber-300 flex items-center gap-1.5 uppercase">
+                <Image className="w-4 h-4 text-amber-400" />
+                የባጁ ሰንደቅ ዓላማዎች፣ ሎጎ፣ ማህተምና ፊርማ ማስገቢያ (ከጋለሪ)
+              </h4>
+              <span className="text-[10px] font-black text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-full self-start sm:self-auto">
+                ✓ በፋየርስቶር ተመዝግቦ ይቆያል
+              </span>
+            </div>
+            <p className="text-[11px] font-bold text-sky-300">
+              አንዴ ያስገቡት ሰንደቅ ዓላማ፣ ሎጎ፣ ማህተምና ፊርማ በፋየርስቶር ተመዝግቦ ስለሚቀመጥ አዲስ ባጅ በመዘገቡ ቁጥር በድጋሚ ማስገባት አይጠበቅብዎትም::
+            </p>
 
             <div className="grid grid-cols-2 gap-3 text-xs">
               {/* Ethiopian Flag Upload */}
               <div className="p-2.5 bg-slate-800/80 rounded-lg border border-slate-700">
-                <label className="block font-bold text-slate-200 mb-1">
+                <label className="block font-black text-sky-200 mb-1">
                   የኢትዮጵያ ሰንደቅ ዓላማ
                 </label>
                 <div className="flex items-center gap-2">
@@ -529,13 +574,15 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                     alt="Ethiopia Flag"
                     className="w-10 h-7 object-cover rounded border border-slate-600 bg-black"
                   />
-                  <label className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-bold px-2 py-1 rounded-md text-[10px] flex items-center gap-1 transition">
+                  <label className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-black px-2 py-1 rounded-md text-[10px] flex items-center gap-1 transition">
                     <Upload className="w-3 h-3" />
                     ከጋለሪ
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleImageUpload(e, setEthiopiaFlag)}
+                      onChange={(e) =>
+                        handleImageUpload(e, setEthiopiaFlag, false, "ethiopiaFlag")
+                      }
                       className="hidden"
                     />
                   </label>
@@ -544,7 +591,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
               {/* Benishangul Gumuz Regional Flag Upload */}
               <div className="p-2.5 bg-slate-800/80 rounded-lg border border-slate-700">
-                <label className="block font-bold text-slate-200 mb-1">
+                <label className="block font-black text-sky-200 mb-1">
                   የክልሉ ሰንደቅ ዓላማ
                 </label>
                 <div className="flex items-center gap-2">
@@ -553,13 +600,15 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                     alt="Region Flag"
                     className="w-10 h-7 object-cover rounded border border-slate-600 bg-black"
                   />
-                  <label className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-bold px-2 py-1 rounded-md text-[10px] flex items-center gap-1 transition">
+                  <label className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-black px-2 py-1 rounded-md text-[10px] flex items-center gap-1 transition">
                     <Upload className="w-3 h-3" />
                     ከጋለሪ
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleImageUpload(e, setRegionFlag)}
+                      onChange={(e) =>
+                        handleImageUpload(e, setRegionFlag, false, "regionFlag")
+                      }
                       className="hidden"
                     />
                   </label>
@@ -568,7 +617,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
               {/* Commission Logo Upload */}
               <div className="p-2.5 bg-slate-800/80 rounded-lg border border-slate-700">
-                <label className="block font-bold text-slate-200 mb-1">
+                <label className="block font-black text-amber-200 mb-1">
                   የወረዳ 2 ፖሊስ ጽ/ቤት ሎጎ
                 </label>
                 <div className="flex items-center gap-2">
@@ -577,13 +626,15 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                     alt="Commission Logo"
                     className="w-8 h-8 object-contain rounded-full border border-slate-600 bg-slate-900 p-0.5"
                   />
-                  <label className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-bold px-2 py-1 rounded-md text-[10px] flex items-center gap-1 transition">
+                  <label className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-black px-2 py-1 rounded-md text-[10px] flex items-center gap-1 transition">
                     <Upload className="w-3 h-3" />
                     ከጋለሪ
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleImageUpload(e, setCommissionLogo)}
+                      onChange={(e) =>
+                        handleImageUpload(e, setCommissionLogo, false, "commissionLogo")
+                      }
                       className="hidden"
                     />
                   </label>
@@ -592,7 +643,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
               {/* Circular Stamp Upload */}
               <div className="p-2.5 bg-slate-800/80 rounded-lg border border-slate-700">
-                <label className="block font-bold text-slate-200 mb-1">
+                <label className="block font-black text-amber-200 mb-1">
                   የጽ/ቤቱ ክብ ማህተም
                 </label>
                 <div className="flex items-center gap-2">
@@ -601,13 +652,15 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                     alt="Stamp Preview"
                     className="w-8 h-8 object-contain rounded border border-slate-600 bg-white p-0.5"
                   />
-                  <label className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-bold px-2 py-1 rounded-md text-[10px] flex items-center gap-1 transition">
+                  <label className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-black px-2 py-1 rounded-md text-[10px] flex items-center gap-1 transition">
                     <Upload className="w-3 h-3" />
                     ከጋለሪ
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleImageUpload(e, setOfficialStamp)}
+                      onChange={(e) =>
+                        handleImageUpload(e, setOfficialStamp, false, "officialStamp")
+                      }
                       className="hidden"
                     />
                   </label>
@@ -616,7 +669,7 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
 
               {/* Signature Upload */}
               <div className="p-2.5 bg-slate-800/80 rounded-lg border border-slate-700 col-span-2 sm:col-span-1">
-                <label className="block font-bold text-slate-200 mb-1">
+                <label className="block font-black text-emerald-200 mb-1">
                   የጽ/ቤት ኃላፊው ፊርማ
                 </label>
                 <div className="flex items-center gap-2">
@@ -625,13 +678,15 @@ export const BadgeForm: React.FC<BadgeFormProps> = ({
                     alt="Signature Preview"
                     className="w-12 h-7 object-contain rounded border border-slate-600 bg-white p-0.5"
                   />
-                  <label className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-bold px-2 py-1 rounded-md text-[10px] flex items-center gap-1 transition">
+                  <label className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-black px-2 py-1 rounded-md text-[10px] flex items-center gap-1 transition">
                     <Upload className="w-3 h-3" />
                     ከጋለሪ
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleImageUpload(e, setSignature)}
+                      onChange={(e) =>
+                        handleImageUpload(e, setSignature, false, "signature")
+                      }
                       className="hidden"
                     />
                   </label>

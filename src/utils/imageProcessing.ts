@@ -50,6 +50,76 @@ export async function compressPhotoForStorage(
 }
 
 /**
+ * Compress logos, flags, stamps, and signatures while preserving alpha transparency
+ * and guaranteeing payload stays safely within Firestore field size limits.
+ */
+export async function compressAssetForStorage(
+  imageSrc: string,
+  maxWidth = 360,
+  maxHeight = 360,
+  maxChars = 160000
+): Promise<string> {
+  if (!imageSrc) return imageSrc;
+  if (imageSrc.startsWith("data:image/svg+xml") && imageSrc.length <= maxChars) {
+    return imageSrc;
+  }
+  if (!imageSrc.startsWith("data:image")) return imageSrc;
+
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      let scale = 1;
+      if (img.width > maxWidth || img.height > maxHeight) {
+        scale = Math.min(maxWidth / img.width, maxHeight / img.height);
+      }
+      let width = Math.max(1, Math.round(img.width * scale));
+      let height = Math.max(1, Math.round(img.height * scale));
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        resolve(imageSrc.slice(0, maxChars));
+        return;
+      }
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Try WebP first (supports alpha transparency with small size)
+      let out = canvas.toDataURL("image/webp", 0.85);
+      if (out.length > maxChars || !out.startsWith("data:image/webp")) {
+        out = canvas.toDataURL("image/png");
+      }
+      if (out.length > maxChars) {
+        const downCanvas = document.createElement("canvas");
+        downCanvas.width = Math.max(80, Math.round(width * 0.6));
+        downCanvas.height = Math.max(80, Math.round(height * 0.6));
+        const downCtx = downCanvas.getContext("2d");
+        if (downCtx) {
+          downCtx.clearRect(0, 0, downCanvas.width, downCanvas.height);
+          downCtx.drawImage(img, 0, 0, downCanvas.width, downCanvas.height);
+          out = downCanvas.toDataURL("image/webp", 0.78);
+          if (out.length > maxChars || !out.startsWith("data:image/webp")) {
+            out = downCanvas.toDataURL("image/jpeg", 0.78);
+          }
+        }
+      }
+
+      resolve(out);
+    };
+
+    img.onerror = () => {
+      resolve(imageSrc);
+    };
+
+    img.src = imageSrc;
+  });
+}
+
+/**
  * Process a headshot photo on HTML5 Canvas according to user parameters:
  * - Clean white background
  * - Glare reduction & specular highlight smoothing

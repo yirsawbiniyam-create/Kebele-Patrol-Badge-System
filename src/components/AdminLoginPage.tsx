@@ -179,7 +179,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({
               </p>
               <div className="inline-flex items-center gap-1.5 bg-blue-500/15 border border-blue-400/30 text-blue-300 text-[10px] font-bold px-3 py-1 rounded-full mt-2 uppercase tracking-wide">
                 <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
-                የቀበሌ ፓትሮል ባጅ ሲስተም አድሚን ፖርታል (Admin Portal)
+                የቀበሌ ፓትሮል ቅኝት ባጅ ሲስተም አድሚን ፖርታል (Admin Portal)
               </div>
             </div>
           </div>

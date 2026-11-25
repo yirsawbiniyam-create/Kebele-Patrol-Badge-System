@@ -58,7 +58,7 @@ export const PrintSheetModal: React.FC<PrintSheetModalProps> = ({
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="text-base font-black text-amber-300">
-                  የፓትሮል ባጅ ኤቲኤም ሳይዝ ማተሚያ (ATM Size Print Studio)
+                  የፓትሮል ቅኝት ባጅ ኤቲኤም ሳይዝ ማተሚያ (ATM Size Print Studio)
                 </h3>
                 <span className="text-[10px] font-black text-emerald-300 bg-emerald-950/80 border border-emerald-400/40 px-2.5 py-0.5 rounded-full">
                   {isAtmSize
@@ -209,7 +209,7 @@ export const PrintSheetModal: React.FC<PrintSheetModalProps> = ({
           <div className="text-center print:mb-3 space-y-1">
             <span className="text-xs font-black text-[#facc15] bg-[#0a192f] px-3 py-1 rounded-full border border-[#d4af37]/40 inline-flex items-center gap-1.5 print:bg-slate-100 print:text-slate-900 print:border-slate-300 print:text-[10px]">
               <ShieldCheck className="w-3.5 h-3.5 text-amber-400 print:text-blue-700" />
-              አሶሳ ከተማ አስ/ር ወረዳ ሁለት ፖሊስ ጽ/ቤት — {isAtmSize ? "የኤቲኤም ካርድ መጠን (85.6mm × 53.98mm)" : "የቀበሌ ፓትሮል ባጅ"}
+              አሶሳ ከተማ አስ/ር ወረዳ ሁለት ፖሊስ ጽ/ቤት — {isAtmSize ? "የኤቲኤም ካርድ መጠን (85.6mm × 53.98mm)" : "የቀበሌ ፓትሮል ቅኝት ባጅ"}
             </span>
             <h4 className="text-sm font-black text-white mt-1 print:text-slate-900 print:text-xs">
               {badge.fullNameAmharic} ({badge.badgeId}) — {badge.departmentAmharic}

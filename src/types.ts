@@ -47,3 +47,12 @@ export interface AdminSettings {
   updatedAt?: string;
 }
 
+export interface BadgeAssets {
+  ethiopiaFlag: string;
+  regionFlag: string;
+  commissionLogo: string;
+  officialStamp: string;
+  signature: string;
+  updatedAt?: string;
+}
+
