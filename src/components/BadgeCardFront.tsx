@@ -48,6 +48,15 @@ export const BadgeCardFront: React.FC<BadgeCardFrontProps> = ({
         <div className="absolute -top-14 -left-14 w-36 h-36 bg-[#facc15]/20 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute -bottom-14 -right-14 w-36 h-36 bg-[#2563eb]/30 rounded-full blur-2xl pointer-events-none" />
 
+        {/* Official Police Logo Security Watermark in Background */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+          <img
+            src={logo}
+            alt="Watermark Logo"
+            className="w-[170px] h-[170px] object-contain opacity-[0.16] filter brightness-125 contrast-125"
+          />
+        </div>
+
         {/* Top Header Section: Flags & Office Logo with Titles */}
         <div className="relative pt-1 px-2.5 pb-1 bg-gradient-to-r from-[#091833] via-[#133261] to-[#091833] border-b-2 border-[#eab308]">
           <div className="flex items-center justify-between gap-2">

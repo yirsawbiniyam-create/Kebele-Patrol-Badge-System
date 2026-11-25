@@ -59,7 +59,7 @@ export const BadgeCardBack: React.FC<BadgeCardBackProps> = ({
           <img
             src={logo}
             alt="Watermark Logo"
-            className="w-[175px] h-[175px] object-contain opacity-[0.14] filter brightness-125 contrast-125"
+            className="w-[175px] h-[175px] object-contain opacity-[0.16] filter brightness-125 contrast-125"
           />
         </div>
 
